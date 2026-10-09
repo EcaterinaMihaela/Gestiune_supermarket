@@ -1,0 +1,29 @@
+
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <title>Supermarket online</title>
+</head>
+<body>
+    <h1>Supermarketul meu</h1>
+    <h2>Lista produselor</h2>
+
+    {% for produs in produse %}
+        <div>
+            <h3>{{ produs.denumire }}</h3>
+            <p>
+                Categoria:
+                {{ produs.id_categorie.denumire|default:"Nespecificată" }}
+            </p>
+            <p>
+                Raion:
+                {{ produs.id_raion.nume_raion|default:"Nespecificat" }}
+            </p>
+        </div>
+        <hr>
+    {% empty %}
+        <p>Nu există produse în baza de date.</p>
+    {% endfor %}
+</body>
+</html>
