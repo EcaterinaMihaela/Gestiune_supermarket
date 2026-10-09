@@ -1,29 +1,360 @@
-
 <!DOCTYPE html>
 <html lang="ro">
+
 <head>
     <meta charset="UTF-8">
-    <title>Supermarket online</title>
-</head>
-<body>
-    <h1>Supermarketul meu</h1>
-    <h2>Lista produselor</h2>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FreshMarket | Supermarket online</title>
 
-    {% for produs in produse %}
-        <div>
-            <h3>{{ produs.denumire }}</h3>
-            <p>
-                Categoria:
-                {{ produs.id_categorie.denumire|default:"Nespecificată" }}
-            </p>
-            <p>
-                Raion:
-                {{ produs.id_raion.nume_raion|default:"Nespecificat" }}
-            </p>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f7f4;
+            color: #26352b;
+        }
+
+        header {
+            background: #ffffff;
+            padding: 22px 7%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 12px #0000000a;
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: bold;
+            color: #24834a;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #435047;
+            margin-left: 25px;
+            font-size: 14px;
+        }
+
+        .hero {
+            margin: 35px auto;
+            width: 86%;
+            padding: 45px;
+            border-radius: 20px;
+            background: linear-gradient(120deg, #e0f4df, #f4fae9);
+        }
+
+        .hero h1 {
+            font-size: 36px;
+            margin-bottom: 14px;
+            color: #205e35;
+        }
+
+        .hero p {
+            color: #617264;
+            line-height: 1.6;
+        }
+
+        .catalog {
+            width: 86%;
+            margin: 0 auto 50px;
+        }
+
+        .section-title {
+            margin-bottom: 25px;
+        }
+
+        .section-title h2 {
+            font-size: 27px;
+            margin-bottom: 8px;
+        }
+
+        .section-title p {
+            color: #7b857d;
+        }
+
+        .products {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 22px;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 16px;
+            padding: 22px;
+            border: 1px solid #e8ede7;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px #193c2112;
+        }
+
+        .product-icon {
+            height: 125px;
+            border-radius: 12px;
+            background: #f0f7ed;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+            margin-bottom: 18px;
+        }
+
+        .tag {
+            display: inline-block;
+            background: #e6f5e8;
+            color: #267641;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin-bottom: 12px;
+        }
+
+        .product-card h3 {
+            font-size: 19px;
+            margin-bottom: 10px;
+        }
+
+        .details {
+            color: #778078;
+            font-size: 13px;
+            line-height: 1.8;
+            min-height: 45px;
+        }
+
+        .cart-button {
+            display: block;
+            width: 100%;
+            margin-top: 18px;
+            padding: 12px;
+            border: none;
+            border-radius: 9px;
+            background: #278348;
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .cart-button:hover {
+            background: #1d6838;
+        }
+
+        .empty {
+            background: white;
+            border-radius: 15px;
+            padding: 35px;
+            text-align: center;
+            color: #778078;
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px;
+            color: #778078;
+            background: white;
+            font-size: 13px;
+        }
+
+        @media (max-width: 600px) {
+            header {
+                padding: 18px 5%;
+                flex-wrap: wrap;
+                gap: 15px;
+            }
+
+            nav a {
+                margin-left: 0;
+                margin-right: 14px;
+            }
+
+            .hero,
+            .catalog {
+                width: 92%;
+            }
+
+            .hero {
+                padding: 28px;
+            }
+
+            .hero h1 {
+                font-size: 28px;
+            }
+        }
+
+        .product-card {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 16px;
+            border: 1px solid #e8eee7;
+            box-shadow: 0 4px 15px rgba(30, 65, 35, 0.05);
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+            overflow: hidden;
+        }
+
+        .product-card:hover {
+            transform: translateY(-7px);
+            box-shadow: 0 14px 30px rgba(30, 65, 35, 0.12);
+        }
+
+        .product-image-container {
+            height: 205px;
+            background: linear-gradient(145deg, #f5f9f2, #edf5e8);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            margin-bottom: 18px;
+        }
+
+        .product-image {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            padding: 12px;
+            transition: transform 0.3s ease;
+        }
+
+        .product-card:hover .product-image {
+            transform: scale(1.06);
+        }
+
+        .product-icon {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 65px;
+        }
+
+        .tag {
+            display: inline-block;
+            background: #e6f5e8;
+            color: #267641;
+            padding: 7px 12px;
+            border-radius: 30px;
+            font-size: 11px;
+            font-weight: bold;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+
+        .product-card h3 {
+            font-size: 19px;
+            line-height: 1.4;
+            color: #25392a;
+            margin-bottom: 9px;
+        }
+
+        .details {
+            color: #7b857d;
+            font-size: 13px;
+            line-height: 1.7;
+            min-height: 44px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #edf0eb;
+        }
+
+        .cart-button {
+            display: block;
+            width: 100%;
+            margin-top: 15px;
+            padding: 13px;
+            border: none;
+            border-radius: 11px;
+            background: #278348;
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s;
+        }
+
+        .cart-button:hover {
+            background: #1d6838;
+            transform: scale(1.02);
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="logo">🥬 FreshMarket</div>
+
+        <nav>
+            <a href="/produse/">Produse</a>
+            <a href="/admin/">Administrare</a>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <h1>Prospețime în fiecare zi.</h1>
+        <p>
+            Descoperă produsele tale preferate într-un singur loc.
+            Simplu, rapid și convenabil.
+        </p>
+    </section>
+
+    <main class="catalog">
+        <div class="section-title">
+            <h2>Produsele noastre</h2>
+            <p>Alege produsele potrivite pentru tine.</p>
         </div>
-        <hr>
-    {% empty %}
-        <p>Nu există produse în baza de date.</p>
-    {% endfor %}
+
+        <div class="products">
+            {% for produs in produse %}
+            <article class="product-card">
+
+
+                {% if produs.imagine_produs %}
+                <img src="{{ produs.imagine_produs.imagine.url }}" alt="{{ produs.denumire }}" style="width: 100%; height: 160px; object-fit: contain;
+               background: #f0f7ed; border-radius: 12px;
+               margin-bottom: 18px;">
+                {% else %}
+                <div class="product-icon">🛒</div>
+                {% endif %}
+
+                <span class="tag">
+                    {{ produs.id_categorie.denumire|default:"Produs alimentar" }}
+                </span>
+
+                <h3>{{ produs.denumire }}</h3>
+
+                <p class="details">
+                    Raion:
+                    {{ produs.id_raion.nume_raion|default:"Nespecificat" }}
+                </p>
+
+                <button class="cart-button" onclick="alert('Funcția de coș va fi adăugată ulterior!')">
+                    + Adaugă în coș
+                </button>
+
+            </article>
+            {% empty %}
+            <div class="empty">
+                <h3>Momentan nu există produse.</h3>
+                <p>Adaugă produse din panoul de administrare.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </main>
+
+    <footer>
+        © 2026 FreshMarket · Supermarketul tău online
+    </footer>
+
 </body>
+
 </html>
