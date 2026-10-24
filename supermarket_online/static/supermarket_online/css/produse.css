@@ -530,4 +530,39 @@ body {
     .hero-button {
         text-align: center;
     }
+
+
+.product-price {
+    margin: 14px 0;
+}
+
+.old-price {
+    color: #888;
+    text-decoration: line-through;
+    font-size: 0.9rem;
+    margin-right: 8px;
+}
+
+.discount-badge {
+    display: inline-block;
+    background: #dc2626;
+    color: white;
+    font-size: 0.8rem;
+    font-weight: bold;
+    padding: 4px 8px;
+    border-radius: 6px;
+}
+
+.current-price {
+    color: #15803d;
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin-top: 6px;
+}
+
+.price-unavailable {
+    color: #777;
+    font-size: 0.9rem;
+}
+
 }

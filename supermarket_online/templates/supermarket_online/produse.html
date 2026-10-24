@@ -145,6 +145,35 @@
                       class="add-to-cart-form">
                     {% csrf_token %}
                     <input type="hidden" name="cantitate" value="1">
+                    
+<div class="product-price">
+    {% if produs.pret_final != None %}
+
+        {% if produs.are_promotie %}
+            <span class="old-price">
+                {{ produs.pret_initial|floatformat:2 }} lei
+            </span>
+
+            <span class="discount-badge">
+                -{{ produs.procent_reducere|floatformat:0 }}%
+            </span>
+
+            <div class="current-price">
+                {{ produs.pret_final|floatformat:2 }} lei
+            </div>
+        {% else %}
+            <div class="current-price">
+                {{ produs.pret_final|floatformat:2 }} lei
+            </div>
+        {% endif %}
+
+    {% else %}
+        <div class="price-unavailable">
+            Preț indisponibil
+        </div>
+    {% endif %}
+</div>
+
                     <button type="submit" class="cart-button">
                         + Adaugă în coș
                     </button>

@@ -1,18 +1,103 @@
-
-from decimal import Decimal, InvalidOperation
+from decimal import Decimal, ROUND_HALF_UP
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.http import require_POST
+from django.utils import timezone
 
-from .models import Produse, ProduseFurnizori
+from .models import Produse, ProduseFurnizori, ProdusePromotii
 
+
+from .models import (
+    Produse,
+    ProduseFurnizori,
+    ProdusePromotii,
+)
+
+
+def obtine_detalii_pret(produs_id):
+    # Cel mai mic pret dintre furnizorii produsului
+    pret_initial = (
+        ProduseFurnizori.objects
+        .filter(
+            id_produs_id=produs_id,
+            pret__isnull=False,
+            pret__gte=0
+        )
+        .order_by('pret')
+        .values_list('pret', flat=True)
+        .first()
+    )
+
+    if pret_initial is None:
+        return {
+            'pret_initial': None,
+            'pret_final': None,
+            'procent_reducere': None,
+            'are_promotie': False,
+        }
+
+    pret_initial = Decimal(str(pret_initial))
+    azi = timezone.localdate()
+
+    # Cautam promotiile active pentru produs
+    promotii_active = (
+        ProdusePromotii.objects
+        .filter(
+            id_produs_id=produs_id,
+            id_promotie__data_start__lte=azi,
+            id_promotie__data_sfarsit__gte=azi,
+            id_promotie__procent_reducere__gt=0,
+            id_promotie__procent_reducere__lte=100,
+        )
+        .select_related('id_promotie')
+    )
+
+    # Daca exista mai multe promotii active, o alegem pe cea mai mare
+    promotie = max(
+        promotii_active,
+        key=lambda relatie: relatie.id_promotie.procent_reducere,
+        default=None
+    )
+
+    if promotie is None:
+        return {
+            'pret_initial': pret_initial,
+            'pret_final': pret_initial,
+            'procent_reducere': None,
+            'are_promotie': False,
+        }
+
+    procent = Decimal(str(
+        promotie.id_promotie.procent_reducere
+    ))
+
+    pret_final = (
+        pret_initial * (Decimal('100') - procent) / Decimal('100')
+    ).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
+
+    return {
+        'pret_initial': pret_initial,
+        'pret_final': pret_final,
+        'procent_reducere': procent,
+        'are_promotie': True,
+    }
 
 
 def lista_produse(request):
-    produse = Produse.objects.select_related(
-        'id_categorie',
-        'id_raion'
-    ).all()
+    produse = list(
+        Produse.objects.select_related(
+            'id_categorie',
+            'id_raion'
+        ).all()
+    )
+
+    for produs in produse:
+        detalii = obtine_detalii_pret(produs.pk)
+
+        produs.pret_initial = detalii['pret_initial']
+        produs.pret_final = detalii['pret_final']
+        produs.procent_reducere = detalii['procent_reducere']
+        produs.are_promotie = detalii['are_promotie']
 
     categorii = (
         Produse.objects
@@ -33,18 +118,6 @@ def lista_produse(request):
             'categorii': categorii,
         }
     )
-
-
-
-def obtine_pret(produs_id):
-    preturi = ProduseFurnizori.objects.filter(
-        id_produs_id=produs_id,
-        pret__isnull=False,
-        pret__gte=0
-    ).order_by('pret')
-
-    pret = preturi.values_list('pret', flat=True).first()
-    return pret
 
 
 @require_POST
@@ -74,6 +147,7 @@ def adauga_in_cos(request, produs_id):
     return redirect('lista_produse')
 
 
+
 def vizualizare_cos(request):
     cos = request.session.get('cos', {})
     articole = []
@@ -95,11 +169,13 @@ def vizualizare_cos(request):
         if produs is None:
             continue
 
-        pret = obtine_pret(produs_id)
+        detalii = obtine_detalii_pret(produs_id)
+
+        pret = detalii['pret_final']
+        pret_initial = detalii['pret_initial']
         subtotal = None
 
         if pret is not None:
-            pret = Decimal(str(pret))
             subtotal = pret * cantitate
             total += subtotal
 
@@ -107,6 +183,9 @@ def vizualizare_cos(request):
             'produs': produs,
             'cantitate': cantitate,
             'pret': pret,
+            'pret_initial': pret_initial,
+            'procent_reducere': detalii['procent_reducere'],
+            'are_promotie': detalii['are_promotie'],
             'subtotal': subtotal,
         })
 
@@ -121,10 +200,12 @@ def vizualizare_cos(request):
             'total': total,
             'numar_articole': numar_articole,
             'preturi_complete': all(
-                articol['pret'] is not None for articol in articole
+                articol['pret'] is not None
+                for articol in articole
             ),
         }
     )
+
 
 
 @require_POST

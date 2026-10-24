@@ -123,22 +123,33 @@ class Comenzi(models.Model):
 
 
 
+
 class Furnizori(models.Model):
+    TIPURI_FURNIZOR = [
+        ('ALIMENTARE', 'Produse alimentare'),
+        ('LACTATE', 'Lactate și brânzeturi'),
+        ('FRUCTE_LEGUME', 'Fructe și legume'),
+        ('PANIFICATIE', 'Panificație'),
+        ('BAUTURI', 'Băuturi'),
+        ('CURATENIE', 'Produse de curățenie'),
+        ('DIVERSE', 'Produse diverse'),
+    ]
 
     id_furnizor = models.IntegerField(primary_key=True)
-
     nume = models.CharField(max_length=150)
-
     adresa = models.CharField(max_length=200, blank=True, null=True)
-
-
+    tip = models.CharField(
+        max_length=30,
+        choices=TIPURI_FURNIZOR,
+        default='DIVERSE'
+    )
 
     class Meta:
-
         managed = False
-
         db_table = 'furnizori'
 
+    def __str__(self):
+        return self.nume
 
 
 
