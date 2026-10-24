@@ -351,15 +351,17 @@ class SefiRaion(models.Model):
 
 class ImagineProdus(models.Model):
     produs = models.OneToOneField(
-        'Produse',
+        Produse,
         on_delete=models.CASCADE,
         db_column='id_produs',
+        primary_key=True,
         related_name='imagine_produs'
     )
 
     imagine = models.ImageField(upload_to='produse/')
 
     class Meta:
+        managed = True
         db_table = 'imagini_produse'
         verbose_name = 'Imagine produs'
         verbose_name_plural = 'Imagini produse'

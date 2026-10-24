@@ -1,0 +1,464 @@
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --green: #278348;
+    --green-dark: #1d6838;
+    --green-light: #e9f5e8;
+    --text: #25392a;
+    --muted: #748076;
+    --border: #e7ede5;
+    --background: #f6f8f4;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: var(--background);
+    color: var(--text);
+    line-height: 1.6;
+}
+
+/* NAVBAR - identic cu produse.css */
+.site-header {
+    background: #fff;
+    padding: 18px 7%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    box-shadow: 0 2px 12px #00000008;
+}
+
+.logo {
+    color: var(--green);
+    font-size: 25px;
+    font-weight: bold;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.navigation {
+    display: flex;
+    gap: 24px;
+}
+
+.navigation a {
+    text-decoration: none;
+    color: #435047;
+    font-size: 14px;
+}
+
+.navigation a:hover {
+    color: var(--green);
+}
+
+/* PAGINA COȘULUI */
+.cart-page {
+    width: 86%;
+    margin: 35px auto 55px;
+    min-height: 65vh;
+}
+
+.cart-heading {
+    margin-bottom: 30px;
+}
+
+.hero-label {
+    color: var(--green);
+    font-weight: bold;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+}
+
+.cart-heading h1 {
+    font-size: clamp(28px, 4vw, 38px);
+    line-height: 1.2;
+    color: #205e35;
+    margin-bottom: 12px;
+}
+
+.cart-heading > p:last-child {
+    color: var(--muted);
+    font-size: 15px;
+}
+
+/* COȘ GOL */
+.cart-empty {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 50px 25px;
+    text-align: center;
+}
+
+.cart-empty-icon {
+    font-size: 55px;
+    margin-bottom: 15px;
+}
+
+.cart-empty h2 {
+    color: var(--text);
+    margin-bottom: 8px;
+}
+
+.cart-empty p {
+    color: var(--muted);
+    margin-bottom: 20px;
+}
+
+/* LAYOUT COȘ */
+.cart-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap: 28px;
+    align-items: start;
+}
+
+.cart-products {
+    min-width: 0;
+}
+
+.cart-section-title {
+    font-size: 23px;
+    margin-bottom: 18px;
+}
+
+/* FIECARE PRODUS DIN COȘ */
+.cart-item {
+    display: grid;
+    grid-template-columns: 130px minmax(0, 1fr) auto;
+    gap: 20px;
+    align-items: center;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 18px;
+    margin-bottom: 16px;
+    box-shadow: 0 4px 15px #1e41230a;
+}
+
+.cart-product-image {
+    width: 130px;
+    height: 130px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border-radius: 13px;
+    background: linear-gradient(145deg, #f5f9f2, #edf5e8);
+}
+
+.cart-product-image img {
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+    object-fit: contain;
+}
+
+.cart-image-placeholder {
+    font-size: 42px;
+}
+
+.cart-item-info {
+    min-width: 0;
+}
+
+.tag {
+    display: inline-block;
+    background: var(--green-light);
+    color: #267641;
+    padding: 5px 10px;
+    border-radius: 30px;
+    font-size: 10px;
+    font-weight: bold;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+}
+
+.cart-item-info h3 {
+    font-size: 18px;
+    line-height: 1.4;
+    margin-bottom: 6px;
+    overflow-wrap: anywhere;
+}
+
+.cart-category {
+    color: var(--muted);
+    font-size: 12px;
+    margin-bottom: 5px;
+}
+
+.cart-unit-price {
+    color: var(--green-dark);
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.cart-no-price {
+    color: #a45b32;
+    font-size: 13px;
+}
+
+/* CANTITATE ȘI BUTOANE */
+.cart-item-bottom {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 14px;
+}
+
+.cart-quantity-form {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.cart-quantity-form label {
+    font-size: 12px;
+    color: var(--muted);
+}
+
+.cart-quantity-form input {
+    width: 65px;
+    padding: 9px;
+    border: 1px solid #dce5d9;
+    border-radius: 9px;
+    font-size: 14px;
+    color: var(--text);
+}
+
+.cart-button {
+    display: inline-block;
+    padding: 10px 14px;
+    border: none;
+    border-radius: 10px;
+    background: var(--green);
+    color: #fff;
+    font-size: 13px;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.cart-button:hover {
+    background: var(--green-dark);
+}
+
+.cart-button:focus-visible,
+.remove-button:focus-visible {
+    outline: 3px solid #8bc89d;
+    outline-offset: 3px;
+}
+
+.remove-button {
+    border: none;
+    background: transparent;
+    color: #a34c4c;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.remove-button:hover {
+    color: #7c2525;
+    text-decoration: underline;
+}
+
+/* SUBTOTAL PRODUS */
+.cart-item-subtotal {
+    min-width: 95px;
+    text-align: right;
+    align-self: start;
+    padding-top: 8px;
+}
+
+.cart-item-subtotal strong {
+    display: block;
+    color: var(--green-dark);
+    font-size: 17px;
+    white-space: nowrap;
+}
+
+.subtotal-label {
+    color: var(--muted);
+    font-size: 12px;
+}
+
+/* SUMAR COMANDĂ */
+.cart-summary {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 24px;
+    box-shadow: 0 4px 15px #1e41230a;
+    position: sticky;
+    top: 20px;
+}
+
+.cart-summary h2 {
+    font-size: 21px;
+    margin-bottom: 22px;
+}
+
+.summary-line {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    color: var(--muted);
+    font-size: 14px;
+    padding: 10px 0;
+    border-bottom: 1px solid #edf0eb;
+}
+
+.summary-total {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: center;
+    margin-top: 18px;
+    padding-top: 15px;
+    border-top: 1px solid var(--border);
+}
+
+.summary-total strong {
+    color: var(--green-dark);
+    font-size: 22px;
+    white-space: nowrap;
+}
+
+.cart-note {
+    background: #fff8e9;
+    color: #84652a;
+    padding: 12px;
+    border-radius: 10px;
+    font-size: 12px;
+    margin-top: 15px;
+}
+
+.summary-info {
+    color: var(--muted);
+    font-size: 12px;
+    margin: 14px 0;
+}
+
+.cart-continue {
+    display: block;
+    width: 100%;
+    margin-top: 18px;
+}
+
+/* FOOTER */
+.site-footer {
+    text-align: center;
+    padding: 25px;
+    color: var(--muted);
+    background: #fff;
+    border-top: 1px solid var(--border);
+    font-size: 13px;
+}
+
+/* TABLETE */
+@media (max-width: 1050px) {
+    .cart-layout {
+        grid-template-columns: minmax(0, 1fr) 280px;
+        gap: 18px;
+    }
+
+    .cart-item {
+        grid-template-columns: 105px minmax(0, 1fr);
+        gap: 15px;
+    }
+
+    .cart-product-image {
+        width: 105px;
+        height: 115px;
+    }
+
+    .cart-item-subtotal {
+        grid-column: 2;
+        text-align: left;
+        padding-top: 0;
+    }
+}
+
+/* TELEFOANE ȘI TABLETE MICI */
+@media (max-width: 750px) {
+    .site-header {
+        padding: 18px 5%;
+        flex-wrap: wrap;
+    }
+
+    .navigation {
+        gap: 16px;
+        flex-wrap: wrap;
+    }
+
+    .cart-page {
+        width: 92%;
+    }
+
+    .cart-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .cart-summary {
+        position: static;
+    }
+}
+
+@media (max-width: 480px) {
+    .cart-item {
+        grid-template-columns: 80px minmax(0, 1fr);
+        gap: 12px;
+        padding: 12px;
+    }
+
+    .cart-product-image {
+        width: 80px;
+        height: 90px;
+    }
+
+    .cart-item-info h3 {
+        font-size: 16px;
+    }
+
+    .cart-item-bottom {
+        align-items: flex-start;
+    }
+
+    .cart-quantity-form {
+        gap: 7px;
+    }
+
+    .cart-quantity-form label {
+        width: 100%;
+    }
+
+    .cart-item-subtotal {
+        grid-column: 1 / -1;
+        text-align: right;
+        border-top: 1px solid var(--border);
+        padding-top: 10px;
+    }
+
+    .cart-heading h1 {
+        font-size: 28px;
+    }
+
+    .cart-summary {
+        padding: 18px;
+    }
+
+    .navigation {
+        gap: 13px;
+    }
+}

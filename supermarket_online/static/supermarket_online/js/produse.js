@@ -1,52 +1,68 @@
 
 document.addEventListener("DOMContentLoaded", () => {
     const searchInput = document.getElementById("searchInput");
-    const productCards = Array.from(
-        document.querySelectorAll(".product-card")
-    );
+    const productList = document.getElementById("productList");
     const productCount = document.getElementById("productCount");
     const noResults = document.getElementById("noResults");
+    const categoryButtons = document.querySelectorAll("[data-category-filter]");
+
+    if (!productList || !searchInput) return;
+
+    const products = Array.from(
+        productList.querySelectorAll(".product-card")
+    );
+
+    let selectedCategory = "";
+
+    function normalize(value) {
+        return (value || "")
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .toLocaleLowerCase("ro")
+            .trim();
+    }
 
     function filterProducts() {
-        const query = searchInput.value
-            .trim()
-            .toLocaleLowerCase("ro");
-
+        const query = normalize(searchInput.value);
         let visibleCount = 0;
 
-        productCards.forEach((card) => {
-            const productText = card.textContent
-                .toLocaleLowerCase("ro");
+        products.forEach((product) => {
+            const category = normalize(product.dataset.productCategory);
+            const content = normalize(product.textContent);
 
-            const matches = productText.includes(query);
+            const matchesSearch = content.includes(query);
+            const matchesCategory =
+                !selectedCategory || category === normalize(selectedCategory);
 
-            card.hidden = !matches;
+            const visible = matchesSearch && matchesCategory;
 
-            if (matches) {
-                visibleCount++;
-            }
+            product.hidden = !visible;
+
+            if (visible) visibleCount++;
         });
 
-        if (visibleCount === 1) {
-            productCount.textContent = "1 produs găsit";
-        } else {
+        if (productCount) {
             productCount.textContent =
-                `${visibleCount} produse găsite`;
+                `Produse afișate: ${visibleCount} din ${products.length}`;
         }
 
-        noResults.hidden = visibleCount !== 0;
+        if (noResults) {
+            noResults.hidden = visibleCount !== 0;
+        }
     }
 
     searchInput.addEventListener("input", filterProducts);
 
-    document.querySelectorAll(".cart-button").forEach((button) => {
+    categoryButtons.forEach((button) => {
         button.addEventListener("click", () => {
-            const productName = button.dataset.productName;
+            selectedCategory = button.dataset.categoryFilter || "";
+            searchInput.value = "";
 
-            alert(
-                `Ai selectat produsul: ${productName}.\n` +
-                "Coșul de cumpărături va fi implementat ulterior."
-            );
+            filterProducts();
+
+            document.getElementById("catalog")?.scrollIntoView({
+                behavior: "smooth"
+            });
         });
     });
 
