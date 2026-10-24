@@ -40,7 +40,7 @@ class Angajati(models.Model):
 
         db_table = 'angajati'
 
-
+    
 
 
 
@@ -74,7 +74,8 @@ class CategoriiProduse(models.Model):
 
         db_table = 'categorii_produse'
 
-
+    def __str__(self):
+        return self.denumire
 
 
 
@@ -198,25 +199,29 @@ class Plati(models.Model):
 
 
 
+
 class Produse(models.Model):
-
     id_produs = models.IntegerField(primary_key=True)
-
     denumire = models.CharField(max_length=150)
-
-    id_raion = models.ForeignKey('Raioane', models.DO_NOTHING, db_column='id_raion', blank=True, null=True)
-
-    id_categorie = models.ForeignKey(CategoriiProduse, models.DO_NOTHING, db_column='id_categorie', blank=True, null=True)
-
-
+    id_raion = models.ForeignKey(
+        'Raioane', models.DO_NOTHING,
+        db_column='id_raion', blank=True, null=True
+    )
+    id_categorie = models.ForeignKey(
+        CategoriiProduse, models.DO_NOTHING,
+        db_column='id_categorie', blank=True, null=True
+    )
+    descriere = models.TextField(blank=True, null=True)
 
     class Meta:
-
         managed = False
-
         db_table = 'produse'
 
+    def __str__(self):
+        return self.denumire
 
+    def __str__(self):
+        return self.denumire
 
 
 
@@ -325,7 +330,8 @@ class Raioane(models.Model):
         db_table = 'raioane'
 
 
-
+    def __str__(self):
+        return self.nume_raion
 
 
 class SefiRaion(models.Model):
