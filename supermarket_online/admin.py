@@ -6,6 +6,7 @@ from .models import (
     Raioane,
     Produse,
     ImagineProdus,
+    ProduseFurnizori,
     Furnizori
 )
 
@@ -47,3 +48,14 @@ class ProduseAdmin(admin.ModelAdmin):
     list_filter = ("id_categorie", "id_raion")
     inlines = [ImagineProdusInline]
 
+
+@admin.register(ProduseFurnizori)
+class ProduseFurnizoriAdmin(admin.ModelAdmin):
+    list_display = (
+        'id_produs_furnizor',
+        'id_produs',
+        'id_furnizor',
+        'pret',
+    )
+    list_filter = ('id_furnizor',)
+    search_fields = ('id_produs__denumire', 'id_furnizor__nume')

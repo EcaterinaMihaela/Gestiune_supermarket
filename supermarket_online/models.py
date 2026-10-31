@@ -213,23 +213,46 @@ class Plati(models.Model):
 
 class Produse(models.Model):
     id_produs = models.IntegerField(primary_key=True)
+
     denumire = models.CharField(max_length=150)
+
     id_raion = models.ForeignKey(
-        'Raioane', models.DO_NOTHING,
-        db_column='id_raion', blank=True, null=True
+        'Raioane',
+        models.DO_NOTHING,
+        db_column='id_raion',
+        blank=True,
+        null=True
     )
+
     id_categorie = models.ForeignKey(
-        CategoriiProduse, models.DO_NOTHING,
-        db_column='id_categorie', blank=True, null=True
+        CategoriiProduse,
+        models.DO_NOTHING,
+        db_column='id_categorie',
+        blank=True,
+        null=True
     )
+
     descriere = models.TextField(blank=True, null=True)
+
+    specificatii = models.TextField(blank=True, null=True)
+
+    pret = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        default=0
+    )
+
+    stoc = models.PositiveIntegerField(default=0)
+
+    modalitate_livrare = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True
+    )
 
     class Meta:
         managed = False
         db_table = 'produse'
-
-    def __str__(self):
-        return self.denumire
 
     def __str__(self):
         return self.denumire
@@ -260,24 +283,36 @@ class ProduseComenzi(models.Model):
 
 
 
+
 class ProduseFurnizori(models.Model):
+    id_produs_furnizor = models.AutoField(primary_key=True)
 
-    pk = models.CompositePrimaryKey('id_produs', 'id_furnizor')
+    id_produs = models.ForeignKey(
+        'Produse',
+        models.DO_NOTHING,
+        db_column='id_produs'
+    )
 
-    id_produs = models.ForeignKey(Produse, models.DO_NOTHING, db_column='id_produs')
+    id_furnizor = models.ForeignKey(
+        'Furnizori',
+        models.DO_NOTHING,
+        db_column='id_furnizor'
+    )
 
-    id_furnizor = models.ForeignKey(Furnizori, models.DO_NOTHING, db_column='id_furnizor')
-
-    pret = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
-
-
+    pret = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        blank=True,
+        null=True
+    )
 
     class Meta:
-
         managed = False
-
         db_table = 'produse_furnizori'
+        unique_together = (('id_produs', 'id_furnizor'),)
 
+    def __str__(self):
+        return f"{self.id_produs} - {self.id_furnizor}: {self.pret} lei"
 
 
 
