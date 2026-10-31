@@ -1,0 +1,67 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contul meu - FreshMarket</title>
+    <link rel="stylesheet" href="{% static 'supermarket_online/css/contul_meu.css' %}">
+</head>
+<body>
+
+<header class="site-header">
+    <a href="{% url 'lista_produse' %}" class="logo">FreshMarket</a>
+    <nav>
+        <a href="{% url 'lista_produse' %}">Magazin</a>
+        <a href="{% url 'logout' %}">Deconectare</a>
+    </nav>
+</header>
+
+<main class="account-container">
+    <div class="account-card">
+        <div class="account-heading">
+            <div class="avatar">
+                {{ request.user.username|first|upper }}
+            </div>
+            <h1>Contul meu</h1>
+            <p>Gestionează informațiile personale.</p>
+        </div>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="success-message">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        <div class="username-info">
+            <span>Username</span>
+            <strong>{{ request.user.username }}</strong>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+
+            {% for field in form %}
+                <div class="form-group">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+
+                    {% for error in field.errors %}
+                        <small class="error">{{ error }}</small>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+
+            {% if form.non_field_errors %}
+                <div class="error">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+
+            <button type="submit">Salvează modificările</button>
+        </form>
+    </div>
+</main>
+
+</body>
+</html>

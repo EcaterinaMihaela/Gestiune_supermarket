@@ -1,0 +1,152 @@
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f3f7f3;
+    color: #333;
+}
+
+/* Header */
+.site-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 7%;
+    background: #287a42;
+    color: white;
+}
+
+.site-header h1 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.site-header a {
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.site-header a:hover {
+    text-decoration: underline;
+}
+
+/* Formular */
+.auth-container {
+    width: 90%;
+    max-width: 480px;
+    margin: 45px auto;
+    padding: 35px;
+    background: white;
+    border-radius: 14px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+}
+
+.auth-container h2 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    text-align: center;
+    color: #287a42;
+    font-size: 27px;
+}
+
+.auth-container > p {
+    text-align: center;
+    color: #777;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+/* Câmpuri */
+.auth-container form p {
+    margin: 18px 0;
+}
+
+.auth-container label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #444;
+}
+
+.auth-container input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #d5ded5;
+    border-radius: 7px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.auth-container input:focus {
+    border-color: #287a42;
+    box-shadow: 0 0 0 3px rgba(40, 122, 66, 0.12);
+}
+
+/* Buton */
+.auth-container button {
+    width: 100%;
+    padding: 13px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 7px;
+    background: #287a42;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.auth-container button:hover {
+    background: #1e6033;
+}
+
+/* Link-uri */
+.auth-container a {
+    color: #287a42;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.auth-container a:hover {
+    text-decoration: underline;
+}
+
+/* Erori */
+.auth-container ul.errorlist {
+    color: #c62828;
+    font-size: 13px;
+    padding-left: 20px;
+}
+
+/* Mesaje ajutătoare Django */
+.auth-container .helptext {
+    display: block;
+    margin-top: 6px;
+    color: #888;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+/* Responsive */
+@media (max-width: 500px) {
+    .site-header {
+        padding: 18px 5%;
+    }
+
+    .site-header h1 {
+        font-size: 23px;
+    }
+
+    .auth-container {
+        margin: 30px auto;
+        padding: 25px 20px;
+    }
+}
