@@ -1,0 +1,44 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autentificare - FreshMarket</title>
+    <link rel="stylesheet" href="{% static 'supermarket_online/css/login.css' %}">
+</head>
+<body>
+
+<header class="site-header">
+    <h1>FreshMarket</h1>
+    <a href="{% url 'lista_produse' %}">Înapoi la magazin</a>
+</header>
+
+<main class="auth-container">
+    <h2>Autentificare</h2>
+    <p>Bine ai revenit la FreshMarket!</p>
+
+    {% if form.errors %}
+        <p class="error-message">
+            Numele de utilizator sau parola sunt incorecte.
+        </p>
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+
+        {{ form.as_p }}
+
+        <button type="submit">Autentificare</button>
+    </form>
+
+    <p>Nu ai cont?
+        <a href="{% url 'inregistrare' %}">Înregistrează-te</a>
+    </p>
+</main>
+
+</body>
+</html>
+```
+

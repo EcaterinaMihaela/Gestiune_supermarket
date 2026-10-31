@@ -38,16 +38,58 @@ class ImagineProdusInline(admin.StackedInline):
 
 @admin.register(Produse)
 class ProduseAdmin(admin.ModelAdmin):
+
     list_display = (
         "id_produs",
         "denumire",
+        "pret",
+        "stoc",
         "id_categorie",
         "id_raion",
     )
-    search_fields = ("denumire",)
-    list_filter = ("id_categorie", "id_raion")
+
+    search_fields = ("denumire", "descriere")
+
+    list_filter = (
+        "id_categorie",
+        "id_raion",
+    )
+
+    ordering = ("denumire",)
+
+    list_per_page = 20
+
     inlines = [ImagineProdusInline]
 
+    fieldsets = (
+        ("Informații generale", {
+            "fields": (
+                "denumire",
+                "descriere",
+                "specificatii",
+            )
+        }),
+
+        ("Preț și disponibilitate", {
+            "fields": (
+                "pret",
+                "stoc",
+            )
+        }),
+
+        ("Încadrare", {
+            "fields": (
+                "id_categorie",
+                "id_raion",
+            )
+        }),
+
+        ("Livrare", {
+            "fields": (
+                "modalitate_livrare",
+            )
+        }),
+    )
 
 @admin.register(ProduseFurnizori)
 class ProduseFurnizoriAdmin(admin.ModelAdmin):

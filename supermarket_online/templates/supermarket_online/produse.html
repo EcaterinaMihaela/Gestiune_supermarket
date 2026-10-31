@@ -1,7 +1,7 @@
-
 {% load static %}
 <!DOCTYPE html>
 <html lang="ro">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,217 +13,227 @@
 </head>
 
 <body>
-<header class="site-header">
-    <a href="{% url 'lista_produse' %}" class="logo">🥬 FreshMarket</a>
+    <header class="site-header">
+        <a href="{% url 'lista_produse' %}" class="logo">🥬 FreshMarket</a>
 
-    <nav class="navigation">
-        <a href="#acasa">Acasă</a>
-        <a href="#categorii">Categorii</a>
-        <a href="#catalog">Produse</a>
-        <a href="{% url 'vizualizare_cos' %}">🛒 Coșul meu</a>
-        <a href="/admin/">Administrare</a>
-    </nav>
-</header>
+        <nav class="main-nav">
 
-<main>
-    <!-- BANNER PRINCIPAL -->
-    <section class="hero" id="acasa">
-        <div class="hero-content">
-            <p class="hero-label">Bine ai venit la FreshMarket</p>
-            <h1>Prospețime în fiecare zi.</h1>
-            <p class="hero-description">
-                Descoperă produsele de care ai nevoie, explorează
-                categoriile disponibile și pregătește-ți coșul de cumpărături
-                într-un singur loc.
-            </p>
+            <a href="{% url 'lista_produse' %}">Magazin</a>
 
-            <div class="hero-actions">
-                <a href="#catalog" class="hero-button">Vezi produsele</a>
-                <a href="#categorii" class="hero-button hero-button-secondary">
-                    Explorează categoriile
-                </a>
-            </div>
-        </div>
+            <a href="{% url 'despre_noi' %}">Despre noi</a>
 
-        <div class="hero-illustration" aria-hidden="true">🥬 🥑 🍎</div>
-    </section>
+            {% if user.is_authenticated %}
 
-    <!-- CATEGORII -->
-    <section class="categories-section" id="categorii">
-        <div class="section-title">
-            <p class="hero-label">Explorează magazinul</p>
-            <h2>Categorii disponibile</h2>
-            <p>Alege o categorie pentru a găsi mai ușor produsele dorite.</p>
-        </div>
+            <span class="user-role">
+                {% if user.is_staff %}
+                Administrator
+                {% else %}
+                Client
+                {% endif %}
+            </span>
 
-        <div class="categories-grid">
-            {% for categorie in categorii %}
-            <button
-                type="button"
-                class="category-card"
-                data-category-filter="{{ categorie.id_categorie__denumire|escape }}"
-            >
-                <span class="category-icon" aria-hidden="true">🛍️</span>
-                <span class="category-name">
-                    {{ categorie.id_categorie__denumire }}
-                </span>
-                <span class="category-link">Vezi produsele →</span>
-            </button>
-            {% empty %}
-            <p class="empty">Nu există categorii disponibile momentan.</p>
-            {% endfor %}
+            <a href="{% url 'contul_meu' %}">Contul meu</a>
 
-            <button type="button" class="category-card category-all"
-                    data-category-filter="">
-                <span class="category-icon" aria-hidden="true">🛒</span>
-                <span class="category-name">Toate produsele</span>
-                <span class="category-link">Vezi catalogul →</span>
-            </button>
-        </div>
-    </section>
+            {% if user.is_staff %}
+            <a href="/admin/">Administrare</a>
+            {% endif %}
 
-    <!-- CATALOG -->
-    <section class="catalog" id="catalog">
-        <div class="section-title">
-            <p class="hero-label">Catalog FreshMarket</p>
-            <h2>Descoperă produsele noastre</h2>
-            <p>Alege produsele potrivite pentru tine.</p>
-        </div>
+            <a href="{% url 'logout' %}">Deconectare</a>
 
-        <div class="search-box">
-            <label for="searchInput">Caută produse</label>
-            <input
-                type="search"
-                id="searchInput"
-                placeholder="🔍 Denumire sau categorie..."
-                autocomplete="off"
-            >
-        </div>
+            {% else %}
 
-        <p class="product-count" id="productCount" aria-live="polite">
-            Produse disponibile în catalog
-        </p>
+            <a href="{% url 'login' %}">Autentificare</a>
+            <a href="{% url 'inregistrare' %}">Înregistrare</a>
 
-        <div class="products" id="productList">
-            {% for produs in produse %}
-            <article
-                class="product-card"
-                data-product-category="{{ produs.id_categorie.denumire|default:'Produs alimentar'|escape }}"
-            >
-                <div class="product-image-container">
-                    {% if produs.imagine_produs and produs.imagine_produs.imagine %}
-                    <img
-                        class="product-image"
-                        src="{{ produs.imagine_produs.imagine.url }}"
-                        alt="{{ produs.denumire }}"
-                        loading="lazy"
-                    >
-                    {% else %}
-                    <div class="product-icon" aria-label="Imagine indisponibilă">
-                        🛒
-                    </div>
-                    {% endif %}
-                </div>
+            {% endif %}
 
-                <span class="tag">
-                    {{ produs.id_categorie.denumire|default:"Produs alimentar" }}
-                </span>
+        </nav>
+    </header>
 
-                <h3 class="product-name">{{ produs.denumire }}</h3>
-
-                <p class="description">
-                    {{ produs.descriere|default:"Mai multe detalii despre acest produs vor fi disponibile în curând." }}
+    <main>
+        <!-- BANNER PRINCIPAL -->
+        <section class="hero" id="acasa">
+            <div class="hero-content">
+                <p class="hero-label">Bine ai venit la FreshMarket</p>
+                <h1>Prospețime în fiecare zi.</h1>
+                <p class="hero-description">
+                    Descoperă produsele de care ai nevoie, explorează
+                    categoriile disponibile și pregătește-ți coșul de cumpărături
+                    într-un singur loc.
                 </p>
 
-                <div class="product-details">
-                    <strong>Raion:</strong>
-                    {{ produs.id_raion.nume_raion|default:"Nespecificat" }}
+                <div class="hero-actions">
+                    <a href="#catalog" class="hero-button">Vezi produsele</a>
+                    <a href="#categorii" class="hero-button hero-button-secondary">
+                        Explorează categoriile
+                    </a>
                 </div>
-
-                <form method="post"
-                      action="{% url 'adauga_in_cos' produs.pk %}"
-                      class="add-to-cart-form">
-                    {% csrf_token %}
-                    <input type="hidden" name="cantitate" value="1">
-                    
-<div class="product-price">
-    {% if produs.pret_final != None %}
-
-        {% if produs.are_promotie %}
-            <span class="old-price">
-                {{ produs.pret_initial|floatformat:2 }} lei
-            </span>
-
-            <span class="discount-badge">
-                -{{ produs.procent_reducere|floatformat:0 }}%
-            </span>
-
-            <div class="current-price">
-                {{ produs.pret_final|floatformat:2 }} lei
             </div>
-        {% else %}
-            <div class="current-price">
-                {{ produs.pret_final|floatformat:2 }} lei
+
+            <div class="hero-illustration" aria-hidden="true">🥬 🥑 🍎</div>
+        </section>
+
+        <!-- CATEGORII -->
+        <section class="categories-section" id="categorii">
+            <div class="section-title">
+                <p class="hero-label">Explorează magazinul</p>
+                <h2>Categorii disponibile</h2>
+                <p>Alege o categorie pentru a găsi mai ușor produsele dorite.</p>
             </div>
-        {% endif %}
 
-    {% else %}
-        <div class="price-unavailable">
-            Preț indisponibil
-        </div>
-    {% endif %}
-</div>
+            <div class="categories-grid">
+                {% for categorie in categorii %}
+                <button type="button" class="category-card"
+                    data-category-filter="{{ categorie.id_categorie__denumire|escape }}">
+                    <span class="category-icon" aria-hidden="true">🛍️</span>
+                    <span class="category-name">
+                        {{ categorie.id_categorie__denumire }}
+                    </span>
+                    <span class="category-link">Vezi produsele →</span>
+                </button>
+                {% empty %}
+                <p class="empty">Nu există categorii disponibile momentan.</p>
+                {% endfor %}
 
-                    <button type="submit" class="cart-button">
-                        + Adaugă în coș
-                    </button>
-                </form>
-            </article>
-            {% empty %}
-            <div class="empty empty-catalog">
-                <h3>Momentan nu există produse.</h3>
-                <p>Adaugă produse din panoul de administrare.</p>
+                <button type="button" class="category-card category-all" data-category-filter="">
+                    <span class="category-icon" aria-hidden="true">🛒</span>
+                    <span class="category-name">Toate produsele</span>
+                    <span class="category-link">Vezi catalogul →</span>
+                </button>
             </div>
-            {% endfor %}
-        </div>
+        </section>
 
-        <div class="empty" id="noResults" hidden>
-            <h3>Nu am găsit produse.</h3>
-            <p>Încearcă altă categorie sau alt termen de căutare.</p>
-        </div>
-    </section>
+        <!-- CATALOG -->
+        <section class="catalog" id="catalog">
+            <div class="section-title">
+                <p class="hero-label">Catalog FreshMarket</p>
+                <h2>Descoperă produsele noastre</h2>
+                <p>Alege produsele potrivite pentru tine.</p>
+            </div>
 
-    <!-- AVANTAJE -->
-    <section class="benefits-section">
-        <div class="section-title">
-            <p class="hero-label">De ce FreshMarket?</p>
-            <h2>Cumpărături mai simple</h2>
-        </div>
+            <div class="search-box">
+                <label for="searchInput">Caută produse</label>
+                <input type="search" id="searchInput" placeholder="🔍 Denumire sau categorie..." autocomplete="off">
+            </div>
 
-        <div class="benefits-grid">
-            <article class="benefit-card">
-                <span aria-hidden="true">🥦</span>
-                <h3>Varietate de produse</h3>
-                <p>Explorează produsele organizate pe categorii și raioane.</p>
-            </article>
+            <p class="product-count" id="productCount" aria-live="polite">
+                Produse disponibile în catalog
+            </p>
 
-            <article class="benefit-card">
-                <span aria-hidden="true">🔎</span>
-                <h3>Găsești rapid</h3>
-                <p>Folosește căutarea și filtrează catalogul după categorie.</p>
-            </article>
+            <div class="products" id="productList">
+                {% for produs in produse %}
+                <article class="product-card"
+                    data-product-category="{{ produs.id_categorie.denumire|default:'Produs alimentar'|escape }}">
+                    <div class="product-image-container">
+                        {% if produs.imagine_produs and produs.imagine_produs.imagine %}
+                        <img class="product-image" src="{{ produs.imagine_produs.imagine.url }}"
+                            alt="{{ produs.denumire }}" loading="lazy">
+                        {% else %}
+                        <div class="product-icon" aria-label="Imagine indisponibilă">
+                            🛒
+                        </div>
+                        {% endif %}
+                    </div>
 
-            <article class="benefit-card">
-                <span aria-hidden="true">🛒</span>
-                <h3>Coș de cumpărături</h3>
-                <p>Adaugă produsele dorite și verifică selecția în coș.</p>
-            </article>
-        </div>
-    </section>
-</main>
+                    <span class="tag">
+                        {{ produs.id_categorie.denumire|default:"Produs alimentar" }}
+                    </span>
 
-<footer class="site-footer">
-    © 2026 FreshMarket · Supermarketul tău online
-</footer>
+                    <h3 class="product-name">{{ produs.denumire }}</h3>
+
+                    <p class="description">
+                        {{ produs.descriere|default:"Mai multe detalii despre acest produs vor fi disponibile în
+                        curând." }}
+                    </p>
+
+                    <div class="product-details">
+                        <strong>Raion:</strong>
+                        {{ produs.id_raion.nume_raion|default:"Nespecificat" }}
+                    </div>
+
+                    <form method="post" action="{% url 'adauga_in_cos' produs.pk %}" class="add-to-cart-form">
+                        {% csrf_token %}
+                        <input type="hidden" name="cantitate" value="1">
+
+                        <div class="product-price">
+                            {% if produs.pret_final != None %}
+
+                            {% if produs.are_promotie %}
+                            <span class="old-price">
+                                {{ produs.pret_initial|floatformat:2 }} lei
+                            </span>
+
+                            <span class="discount-badge">
+                                -{{ produs.procent_reducere|floatformat:0 }}%
+                            </span>
+
+                            <div class="current-price">
+                                {{ produs.pret_final|floatformat:2 }} lei
+                            </div>
+                            {% else %}
+                            <div class="current-price">
+                                {{ produs.pret_final|floatformat:2 }} lei
+                            </div>
+                            {% endif %}
+
+                            {% else %}
+                            <div class="price-unavailable">
+                                Preț indisponibil
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <button type="submit" class="cart-button">
+                            + Adaugă în coș
+                        </button>
+                    </form>
+                </article>
+                {% empty %}
+                <div class="empty empty-catalog">
+                    <h3>Momentan nu există produse.</h3>
+                    <p>Adaugă produse din panoul de administrare.</p>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="empty" id="noResults" hidden>
+                <h3>Nu am găsit produse.</h3>
+                <p>Încearcă altă categorie sau alt termen de căutare.</p>
+            </div>
+        </section>
+
+        <!-- AVANTAJE -->
+        <section class="benefits-section">
+            <div class="section-title">
+                <p class="hero-label">De ce FreshMarket?</p>
+                <h2>Cumpărături mai simple</h2>
+            </div>
+
+            <div class="benefits-grid">
+                <article class="benefit-card">
+                    <span aria-hidden="true">🥦</span>
+                    <h3>Varietate de produse</h3>
+                    <p>Explorează produsele organizate pe categorii și raioane.</p>
+                </article>
+
+                <article class="benefit-card">
+                    <span aria-hidden="true">🔎</span>
+                    <h3>Găsești rapid</h3>
+                    <p>Folosește căutarea și filtrează catalogul după categorie.</p>
+                </article>
+
+                <article class="benefit-card">
+                    <span aria-hidden="true">🛒</span>
+                    <h3>Coș de cumpărături</h3>
+                    <p>Adaugă produsele dorite și verifică selecția în coș.</p>
+                </article>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        © 2026 FreshMarket · Supermarketul tău online
+    </footer>
 </body>
+
 </html>

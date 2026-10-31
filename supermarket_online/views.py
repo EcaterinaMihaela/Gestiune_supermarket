@@ -3,6 +3,15 @@ from decimal import Decimal, ROUND_HALF_UP
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.http import require_POST
 from django.utils import timezone
+from django.contrib.auth import login
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib import messages
+from django.shortcuts import render, redirect
+from django.db import IntegrityError, transaction
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import UserChangeForm, PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
+from .forms import EditareContForm
 
 from .models import Produse, ProduseFurnizori, ProdusePromotii
 
@@ -239,3 +248,49 @@ def elimina_din_cos(request, produs_id):
     request.session.modified = True
 
     return redirect('vizualizare_cos')
+
+
+def inregistrare(request):
+    if request.method == "POST":
+        form = UserCreationForm(request.POST)
+
+        if form.is_valid():
+            try:
+                with transaction.atomic():
+                    user = form.save()
+
+                login(request, user)
+                messages.success(request, "Contul a fost creat cu succes!")
+                return redirect("lista_produse")
+
+            except IntegrityError:
+                form.add_error(
+                    "username",
+                    "Acest nume de utilizator este deja folosit."
+                )
+    else:
+        form = UserCreationForm()
+
+    return render(
+        request,
+        "supermarket_online/inregistrare.html",
+        {"form": form}
+    )
+
+@login_required
+def contul_meu(request):
+    if request.method == "POST":
+        form = EditareContForm(request.POST, instance=request.user)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Datele contului au fost actualizate!")
+            return redirect("contul_meu")
+    else:
+        form = EditareContForm(instance=request.user)
+
+    return render(
+        request,
+        "supermarket_online/contul_meu.html",
+        {"form": form}
+    )

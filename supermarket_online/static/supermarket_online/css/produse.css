@@ -1,4 +1,3 @@
-
 * {
     margin: 0;
     padding: 0;
@@ -153,7 +152,7 @@ body {
     font-size: 14px;
 }
 
-.section-title > p:last-child {
+.section-title>p:last-child {
     color: var(--muted);
     font-size: 14px;
 }
@@ -417,7 +416,7 @@ body {
     background: #fff;
 }
 
-.benefit-card > span {
+.benefit-card>span {
     font-size: 32px;
 }
 
@@ -532,37 +531,62 @@ body {
     }
 
 
-.product-price {
-    margin: 14px 0;
-}
+    .product-price {
+        margin: 14px 0;
+    }
 
-.old-price {
-    color: #888;
-    text-decoration: line-through;
-    font-size: 0.9rem;
-    margin-right: 8px;
-}
+    .old-price {
+        color: #888;
+        text-decoration: line-through;
+        font-size: 0.9rem;
+        margin-right: 8px;
+    }
 
-.discount-badge {
-    display: inline-block;
-    background: #dc2626;
-    color: white;
-    font-size: 0.8rem;
-    font-weight: bold;
-    padding: 4px 8px;
-    border-radius: 6px;
-}
+    .discount-badge {
+        display: inline-block;
+        background: #dc2626;
+        color: white;
+        font-size: 0.8rem;
+        font-weight: bold;
+        padding: 4px 8px;
+        border-radius: 6px;
+    }
 
-.current-price {
-    color: #15803d;
-    font-size: 1.35rem;
-    font-weight: 700;
-    margin-top: 6px;
-}
+    .current-price {
+        color: #15803d;
+        font-size: 1.35rem;
+        font-weight: 700;
+        margin-top: 6px;
+    }
 
-.price-unavailable {
-    color: #777;
-    font-size: 0.9rem;
-}
+    .price-unavailable {
+        color: #777;
+        font-size: 0.9rem;
+    }
 
+    .main-nav {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+
+    .main-nav a {
+        color: white;
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .main-nav a:hover {
+        text-decoration: underline;
+    }
+
+    .user-role {
+        background: white;
+        color: #267a3d;
+        padding: 7px 13px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: bold;
+    }
 }
