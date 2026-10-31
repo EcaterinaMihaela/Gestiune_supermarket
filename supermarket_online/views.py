@@ -294,3 +294,9 @@ def contul_meu(request):
         "supermarket_online/contul_meu.html",
         {"form": form}
     )
+
+def despre_noi(request):
+    return render(
+        request,
+        "supermarket_online/despre_noi.html"
+    )

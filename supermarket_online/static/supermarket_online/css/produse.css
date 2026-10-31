@@ -40,20 +40,47 @@ body {
     white-space: nowrap;
 }
 
-.navigation {
+/* MENIU PRINCIPAL */
+.site-header .main-nav {
     display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
     flex-wrap: wrap;
-    gap: 24px;
 }
 
-.navigation a {
-    text-decoration: none;
+.site-header .main-nav a {
     color: #435047;
+    text-decoration: none;
+    font-weight: 600;
     font-size: 14px;
+    padding: 9px 12px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
 }
 
-.navigation a:hover {
-    color: var(--green);
+.site-header .main-nav a:hover {
+    background: var(--green-light);
+    color: var(--green-dark);
+}
+
+/* ROL UTILIZATOR */
+.site-header .user-role {
+    display: inline-block;
+    padding: 8px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.site-header .client-role {
+    background: #e4f3e6;
+    color: #267a3d;
+}
+
+.site-header .admin-role {
+    background: #fff0d5;
+    color: #946000;
 }
 
 /* BANNER PRINCIPAL */
@@ -152,7 +179,7 @@ body {
     font-size: 14px;
 }
 
-.section-title>p:last-child {
+.section-title > p:last-child {
     color: var(--muted);
     font-size: 14px;
 }
@@ -416,7 +443,7 @@ body {
     background: #fff;
 }
 
-.benefit-card>span {
+.benefit-card > span {
     font-size: 32px;
 }
 
@@ -455,11 +482,13 @@ body {
 @media (max-width: 750px) {
     .site-header {
         padding: 18px 5%;
-        flex-wrap: wrap;
+        flex-direction: column;
+        align-items: center;
     }
 
-    .navigation {
-        gap: 16px;
+    .site-header .main-nav {
+        justify-content: center;
+        gap: 8px;
     }
 
     .hero,
@@ -514,8 +543,8 @@ body {
         padding: 25px 22px;
     }
 
-    .navigation {
-        gap: 13px;
+    .site-header .main-nav {
+        gap: 6px;
     }
 
     .categories-grid {
@@ -529,64 +558,41 @@ body {
     .hero-button {
         text-align: center;
     }
+}
 
+/* CORECTARE LINKURI MENIU */
+.site-header .main-nav a,
+.site-header .main-nav a:visited {
+    color: #435047 !important;
+    text-decoration: none !important;
+    font-weight: 600;
+    padding: 9px 12px;
+}
 
-    .product-price {
-        margin: 14px 0;
-    }
+.site-header .main-nav a:hover {
+    color: #ffffff !important;
+    background-color: #2e7d32 !important;
+    text-decoration: none !important;
+}
 
-    .old-price {
-        color: #888;
-        text-decoration: line-through;
-        font-size: 0.9rem;
-        margin-right: 8px;
-    }
+.logout-btn {
+    background: none;
+    border: none;
+    color: #435047;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 9px 12px;
+    cursor: pointer;
+    border-radius: 8px;
+}
 
-    .discount-badge {
-        display: inline-block;
-        background: #dc2626;
-        color: white;
-        font-size: 0.8rem;
-        font-weight: bold;
-        padding: 4px 8px;
-        border-radius: 6px;
-    }
-
-    .current-price {
-        color: #15803d;
-        font-size: 1.35rem;
-        font-weight: 700;
-        margin-top: 6px;
-    }
-
-    .price-unavailable {
-        color: #777;
-        font-size: 0.9rem;
-    }
-
-    .main-nav {
-        display: flex;
-        align-items: center;
-        gap: 20px;
-        flex-wrap: wrap;
-    }
-
-    .main-nav a {
-        color: white;
-        text-decoration: none;
-        font-weight: 600;
-    }
-
-    .main-nav a:hover {
-        text-decoration: underline;
-    }
-
-    .user-role {
-        background: white;
-        color: #267a3d;
-        padding: 7px 13px;
-        border-radius: 20px;
-        font-size: 13px;
-        font-weight: bold;
-    }
+.logout-btn:hover {
+    background: var(--green-light);
+    color: var(--green-dark);
+}
+.welcome-message {
+    color: var(--green-dark);
+    font-size: 14px;
+    font-weight: 700;
+    white-space: nowrap;
 }

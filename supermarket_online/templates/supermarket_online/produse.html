@@ -17,20 +17,18 @@
         <a href="{% url 'lista_produse' %}" class="logo">🥬 FreshMarket</a>
 
         <nav class="main-nav">
-
             <a href="{% url 'lista_produse' %}">Magazin</a>
-
             <a href="{% url 'despre_noi' %}">Despre noi</a>
 
             {% if user.is_authenticated %}
-
-            <span class="user-role">
-                {% if user.is_staff %}
-                Administrator
-                {% else %}
-                Client
-                {% endif %}
-            </span>
+            <span class="welcome-message">
+    Bun venit, {{ user.first_name|default:user.username }}!
+</span>
+            {% if user.is_staff %}
+            <span class="user-role admin-role">Role:Administrator</span>
+            {% else %}
+            <span class="user-role client-role">Role: Client</span>
+            {% endif %}
 
             <a href="{% url 'contul_meu' %}">Contul meu</a>
 
@@ -38,15 +36,14 @@
             <a href="/admin/">Administrare</a>
             {% endif %}
 
-            <a href="{% url 'logout' %}">Deconectare</a>
-
+            <form method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="logout-btn">Deconectare</button>
+            </form>
             {% else %}
-
             <a href="{% url 'login' %}">Autentificare</a>
             <a href="{% url 'inregistrare' %}">Înregistrare</a>
-
             {% endif %}
-
         </nav>
     </header>
 

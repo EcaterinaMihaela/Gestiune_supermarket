@@ -45,6 +45,7 @@ urlpatterns = [
         name="logout"
     ),
     path("contul-meu/", views.contul_meu, name="contul_meu"),
+    path("despre-noi/", views.despre_noi, name="despre_noi"),
 ]
 
 if settings.DEBUG:

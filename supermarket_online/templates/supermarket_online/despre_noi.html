@@ -1,0 +1,65 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Despre noi - FreshMarket</title>
+    <link rel="stylesheet" href="{% static 'supermarket_online/css/despre_noi.css' %}">
+</head>
+<body>
+
+<header class="site-header">
+    <a href="{% url 'lista_produse' %}" class="logo">FreshMarket</a>
+
+    <nav>
+        <a href="{% url 'lista_produse' %}">Magazin</a>
+        <a href="{% url 'contul_meu' %}">Contul meu</a>
+    </nav>
+</header>
+
+<main class="about-container">
+
+    <section class="about-hero">
+        <h1>Despre FreshMarket</h1>
+        <p>Prospețime, calitate și cumpărături simple, într-un singur loc.</p>
+    </section>
+
+    <section class="about-content">
+        <h2>Cine suntem?</h2>
+        <p>
+            FreshMarket este un supermarket online creat pentru a oferi
+            clienților o experiență de cumpărături simplă și accesibilă.
+            Platforma permite explorarea produselor, consultarea prețurilor
+            și gestionarea comenzilor.
+        </p>
+
+        <h2>Misiunea noastră</h2>
+        <p>
+            Ne dorim să facem cumpărăturile mai rapide și mai confortabile,
+            oferind acces facil la o varietate de produse.
+        </p>
+
+        <h2>Ce oferim?</h2>
+        <ul>
+            <li>O gamă variată de produse.</li>
+            <li>Organizarea produselor pe categorii și raioane.</li>
+            <li>Informații despre prețuri și disponibilitate.</li>
+            <li>Conturi personale pentru clienți.</li>
+            <li>O experiență de cumpărături ușor de utilizat.</li>
+        </ul>
+    </section>
+
+    <a href="{% url 'lista_produse' %}" class="back-button">
+        Descoperă produsele
+    </a>
+
+</main>
+
+<footer>
+    <p>&copy; 2026 FreshMarket. Toate drepturile rezervate.</p>
+</footer>
+
+</body>
+</html>
