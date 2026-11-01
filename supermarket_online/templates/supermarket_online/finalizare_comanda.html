@@ -1,0 +1,58 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finalizare comandă - FreshMarket</title>
+    <link rel="stylesheet" href="{% static 'supermarket_online/css/cos.css' %}">
+</head>
+<body>
+<header class="site-header">
+    <a href="{% url 'lista_produse' %}" class="logo">🥬 FreshMarket</a>
+    <nav class="navigation">
+        <a href="{% url 'lista_produse' %}">Produse</a>
+        <a href="{% url 'vizualizare_cos' %}">Coșul meu</a>
+    </nav>
+</header>
+
+<main class="cart-page">
+    <div class="cart-heading">
+        <p class="hero-label">FreshMarket</p>
+        <h1>Finalizarea comenzii</h1>
+        <p>Completează datele pentru livrarea produselor.</p>
+    </div>
+
+    <section class="cart-summary">
+        <h2>Date de livrare și plată</h2>
+
+        <form method="post">
+            {% csrf_token %}
+
+            {% if form.errors %}
+                <div class="cart-note">
+                    {{ form.errors }}
+                </div>
+            {% endif %}
+
+            {{ form.as_p }}
+
+            <button type="submit" class="cart-button cart-continue">
+                Salvează datele
+            </button>
+        </form>
+
+        <p>
+            <a href="{% url 'vizualizare_cos' %}">
+                Înapoi la coș
+            </a>
+        </p>
+    </section>
+</main>
+
+<footer class="site-footer">
+    © 2026 FreshMarket · Supermarketul tău online
+</footer>
+</body>
+</html>

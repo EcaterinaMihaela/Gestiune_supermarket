@@ -46,6 +46,16 @@ urlpatterns = [
     ),
     path("contul-meu/", views.contul_meu, name="contul_meu"),
     path("despre-noi/", views.despre_noi, name="despre_noi"),
+    path(
+    'finalizare-comanda/',
+    views.finalizare_comanda,
+    name='finalizare_comanda'
+    ),
+    path(
+    'confirmare-comanda/<int:id_comanda>/',
+    views.confirmare_comanda,
+    name='confirmare_comanda'
+    ),
 ]
 
 if settings.DEBUG:

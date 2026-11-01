@@ -1,0 +1,82 @@
+
+body {
+    margin: 0;
+    padding: 40px 20px;
+    font-family: Arial, sans-serif;
+    background: #f4f7f4;
+    color: #333;
+}
+
+.confirmation-container {
+    max-width: 650px;
+    margin: 30px auto;
+    padding: 40px;
+    background: white;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+
+.success-icon {
+    width: 75px;
+    height: 75px;
+    line-height: 75px;
+    margin: 0 auto 20px;
+    border-radius: 50%;
+    background: #e2f5e8;
+    color: #238b45;
+    font-size: 45px;
+    font-weight: bold;
+}
+
+h1 {
+    color: #238b45;
+    font-size: 27px;
+}
+
+.success-message {
+    color: #666;
+    line-height: 1.6;
+}
+
+.order-info,
+.products {
+    margin-top: 30px;
+    padding: 20px;
+    background: #f8faf8;
+    border-radius: 10px;
+    text-align: left;
+}
+
+.order-info h2,
+.products h2 {
+    margin-top: 0;
+    color: #238b45;
+}
+
+.order-info p {
+    margin: 12px 0;
+}
+
+.product-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.back-button {
+    display: inline-block;
+    margin-top: 30px;
+    padding: 14px 25px;
+    background: #238b45;
+    color: white;
+    text-decoration: none;
+    border-radius: 7px;
+    font-weight: bold;
+}
+
+.back-button:hover {
+    background: #176b34;
+}

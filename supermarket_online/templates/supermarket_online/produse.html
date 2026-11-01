@@ -22,8 +22,8 @@
 
             {% if user.is_authenticated %}
             <span class="welcome-message">
-    Bun venit, {{ user.first_name|default:user.username }}!
-</span>
+                Bun venit, {{ user.first_name|default:user.username }}!
+            </span>
             {% if user.is_staff %}
             <span class="user-role admin-role">Role:Administrator</span>
             {% else %}
@@ -36,6 +36,9 @@
             <a href="/admin/">Administrare</a>
             {% endif %}
 
+            <a href="{% url 'vizualizare_cos' %}" class="nav-link">
+                🛒 Coșul meu
+            </a>
             <form method="post" action="{% url 'logout' %}">
                 {% csrf_token %}
                 <button type="submit" class="logout-btn">Deconectare</button>

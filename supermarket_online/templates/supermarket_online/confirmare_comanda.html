@@ -1,0 +1,66 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comandă confirmată - FreshMarket</title>
+    <link rel="stylesheet" href="{% static 'supermarket_online/css/confirmare_comanda.css' %}">
+</head>
+<body>
+
+<div class="confirmation-container">
+
+    <div class="success-icon">✓</div>
+
+    <h1>Comanda a fost plasată cu succes!</h1>
+
+    <p class="success-message">
+        Îți mulțumim pentru comandă!
+        Am înregistrat comanda ta și aceasta va fi pregătită pentru livrare.
+    </p>
+
+    <div class="order-info">
+        <h2>Detalii comandă</h2>
+
+        <p><strong>Număr comandă:</strong> #{{ comanda.id_comanda }}</p>
+
+        <p>
+            <strong>Data:</strong>
+            {{ comanda.data_comanda|date:"d.m.Y H:i" }}
+        </p>
+
+        <p>
+            <strong>Total:</strong>
+            {{ comanda.total|floatformat:2 }} lei
+        </p>
+
+        {% if plata %}
+        <p>
+            <strong>Metoda de plată:</strong>
+            {{ plata.metoda }}
+        </p>
+        {% endif %}
+    </div>
+
+    <div class="products">
+        <h2>Produse comandate</h2>
+
+        {% for articol in articole %}
+        <div class="product-row">
+            <span>{{ articol.id_produs.denumire }}</span>
+            <span>{{ articol.cantitate }} buc.</span>
+            <span>{{ articol.pret_unitar|floatformat:2 }} lei</span>
+        </div>
+        {% endfor %}
+    </div>
+
+    <a href="{% url 'lista_produse' %}" class="back-button">
+        Continuă cumpărăturile
+    </a>
+
+</div>
+
+</body>
+</html>

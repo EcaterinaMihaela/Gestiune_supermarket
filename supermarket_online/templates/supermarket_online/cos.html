@@ -1,31 +1,32 @@
-
 {% load static %}
 <!DOCTYPE html>
 <html lang="ro">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FreshMarket | Coșul meu</title>
     <link rel="stylesheet" href="{% static 'supermarket_online/css/cos.css' %}">
 </head>
+
 <body>
-<header class="site-header">
-    <a href="{% url 'lista_produse' %}" class="logo">🥬 FreshMarket</a>
-    <nav class="navigation">
-        <a href="{% url 'lista_produse' %}">Produse</a>
-        <a href="{% url 'vizualizare_cos' %}">🛒 Coșul meu ({{ numar_articole|default:0 }})</a>
-        <a href="/admin/">Administrare</a>
-    </nav>
-</header>
+    <header class="site-header">
+        <a href="{% url 'lista_produse' %}" class="logo">🥬 FreshMarket</a>
+        <nav class="navigation">
+            <a href="{% url 'lista_produse' %}">Produse</a>
+            <a href="{% url 'vizualizare_cos' %}">🛒 Coșul meu ({{ numar_articole|default:0 }})</a>
+            <a href="/admin/">Administrare</a>
+        </nav>
+    </header>
 
-<main class="cart-page">
-    <div class="cart-heading">
-        <p class="hero-label">FreshMarket</p>
-        <h1>Coșul tău de cumpărături</h1>
-        <p>Produsele tale preferate, într-un singur loc.</p>
-    </div>
+    <main class="cart-page">
+        <div class="cart-heading">
+            <p class="hero-label">FreshMarket</p>
+            <h1>Coșul tău de cumpărături</h1>
+            <p>Produsele tale preferate, într-un singur loc.</p>
+        </div>
 
-    {% if cos_gol %}
+        {% if cos_gol %}
         <section class="cart-empty">
             <div class="cart-empty-icon">🛒</div>
             <h2>Coșul tău este gol</h2>
@@ -34,7 +35,7 @@
                 Explorează produsele
             </a>
         </section>
-    {% else %}
+        {% else %}
         <div class="cart-layout">
             <section class="cart-products">
                 <h2 class="cart-section-title">
@@ -42,76 +43,64 @@
                 </h2>
 
                 {% for articol in articole %}
-                    <article class="cart-item">
-                        <div class="cart-product-image">
-                            {% if articol.produs.imagine_produs and articol.produs.imagine_produs.imagine %}
-                                <img
-                                    src="{{ articol.produs.imagine_produs.imagine.url }}"
-                                    alt="{{ articol.produs.denumire }}"
-                                >
-                            {% else %}
-                                <div class="cart-image-placeholder">🛒</div>
-                            {% endif %}
+                <article class="cart-item">
+                    <div class="cart-product-image">
+                        {% if articol.produs.imagine_produs and articol.produs.imagine_produs.imagine %}
+                        <img src="{{ articol.produs.imagine_produs.imagine.url }}" alt="{{ articol.produs.denumire }}">
+                        {% else %}
+                        <div class="cart-image-placeholder">🛒</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="cart-item-info">
+                        <span class="tag">
+                            {{ articol.produs.id_categorie.denumire|default:"Produs alimentar" }}
+                        </span>
+                        <h3>{{ articol.produs.denumire }}</h3>
+                        <p class="cart-category">
+                            Raion: {{ articol.produs.id_raion.nume_raion|default:"Nespecificat" }}
+                        </p>
+
+                        {% if articol.pret != None %}
+                        <p class="cart-unit-price">
+                            {{ articol.pret|floatformat:2 }} lei / bucată
+                        </p>
+                        {% else %}
+                        <p class="cart-no-price">
+                            Preț indisponibil
+                        </p>
+                        {% endif %}
+
+                        <div class="cart-item-bottom">
+                            <form method="post" action="{% url 'actualizare_cos' articol.produs.pk %}"
+                                class="cart-quantity-form">
+                                {% csrf_token %}
+                                <label for="cantitate-{{ articol.produs.pk }}">Cantitate</label>
+                                <input id="cantitate-{{ articol.produs.pk }}" type="number" name="cantitate" min="0"
+                                    max="99" value="{{ articol.cantitate }}" required>
+                                <button type="submit" class="cart-button">
+                                    Actualizează
+                                </button>
+                            </form>
+
+                            <form method="post" action="{% url 'elimina_din_cos' articol.produs.pk %}">
+                                {% csrf_token %}
+                                <button type="submit" class="remove-button">
+                                    ♡ Elimină
+                                </button>
+                            </form>
                         </div>
+                    </div>
 
-                        <div class="cart-item-info">
-                            <span class="tag">
-                                {{ articol.produs.id_categorie.denumire|default:"Produs alimentar" }}
-                            </span>
-                            <h3>{{ articol.produs.denumire }}</h3>
-                            <p class="cart-category">
-                                Raion: {{ articol.produs.id_raion.nume_raion|default:"Nespecificat" }}
-                            </p>
-
-                            {% if articol.pret != None %}
-                                <p class="cart-unit-price">
-                                    {{ articol.pret|floatformat:2 }} lei / bucată
-                                </p>
-                            {% else %}
-                                <p class="cart-no-price">
-                                    Preț indisponibil
-                                </p>
-                            {% endif %}
-
-                            <div class="cart-item-bottom">
-                                <form method="post"
-                                      action="{% url 'actualizare_cos' articol.produs.pk %}"
-                                      class="cart-quantity-form">
-                                    {% csrf_token %}
-                                    <label for="cantitate-{{ articol.produs.pk }}">Cantitate</label>
-                                    <input
-                                        id="cantitate-{{ articol.produs.pk }}"
-                                        type="number"
-                                        name="cantitate"
-                                        min="0"
-                                        max="99"
-                                        value="{{ articol.cantitate }}"
-                                        required
-                                    >
-                                    <button type="submit" class="cart-button">
-                                        Actualizează
-                                    </button>
-                                </form>
-
-                                <form method="post"
-                                      action="{% url 'elimina_din_cos' articol.produs.pk %}">
-                                    {% csrf_token %}
-                                    <button type="submit" class="remove-button">
-                                        ♡ Elimină
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-
-                        <div class="cart-item-subtotal">
-                            {% if articol.subtotal != None %}
-                                <strong>{{ articol.subtotal|floatformat:2 }} lei</strong>
-                            {% else %}
-                                <span>—</span>
-                            {% endif %}
-                            <span class="subtotal-label">Subtotal</span>
-                        </div>
-                    </article>
+                    <div class="cart-item-subtotal">
+                        {% if articol.subtotal != None %}
+                        <strong>{{ articol.subtotal|floatformat:2 }} lei</strong>
+                        {% else %}
+                        <span>—</span>
+                        {% endif %}
+                        <span class="subtotal-label">Subtotal</span>
+                    </div>
+                </article>
                 {% endfor %}
             </section>
 
@@ -134,27 +123,43 @@
                 </div>
 
                 {% if not preturi_complete %}
-                    <p class="cart-note">
-                        Unele produse nu au un preț disponibil. Totalul afișat
-                        include doar produsele cu preț înregistrat.
-                    </p>
+                <p class="cart-note">
+                    Unele produse nu au un preț disponibil. Totalul afișat
+                    include doar produsele cu preț înregistrat.
+                </p>
                 {% endif %}
 
                 <p class="summary-info">
                     Costul livrării, dacă va exista, nu este inclus.
                 </p>
+                {% if preturi_complete and user.is_authenticated %}
+                <a class="cart-button cart-continue" href="{% url 'finalizare_comanda' %}">
+                    Finalizează comanda
+                </a>
+                {% elif not user.is_authenticated %}
+                <p class="cart-note">
+                    Pentru a finaliza comanda, trebuie să te autentifici.
+                </p>
+                <a class="cart-button cart-continue" href="{% url 'login' %}">
+                    Autentificare
+                </a>
+                {% else %}
+                <p class="cart-note">
+                    Nu poți finaliza comanda deoarece unele produse nu au preț disponibil.
+                </p>
+                {% endif %}
 
-                <a class="cart-button cart-continue"
-                   href="{% url 'lista_produse' %}">
+                <a class="cart-button cart-continue" href="{% url 'lista_produse' %}">
                     Continuă cumpărăturile
                 </a>
             </aside>
         </div>
-    {% endif %}
-</main>
+        {% endif %}
+    </main>
 
-<footer class="site-footer">
-    © 2026 FreshMarket · Supermarketul tău online
-</footer>
+    <footer class="site-footer">
+        © 2026 FreshMarket · Supermarketul tău online
+    </footer>
 </body>
+
 </html>

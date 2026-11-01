@@ -16,12 +16,16 @@ from django.db import transaction
 from supermarket_online.models import Clienti
 
 from .models import Produse, ProduseFurnizori, ProdusePromotii
-
+from .forms import EditareContForm, FinalizareComandaForm
 
 from .models import (
+    Clienti,
     Produse,
     ProduseFurnizori,
     ProdusePromotii,
+    Comenzi,
+    ProduseComenzi,
+    Plati,
 )
 
 
@@ -143,6 +147,7 @@ def adauga_in_cos(request, produs_id):
     cantitate = max(1, min(cantitate, 99))
 
     cos = request.session.get('cos', {})
+    print("COS PRIMIT:", cos)
     id_produs = str(produs.pk)
 
     try:
@@ -257,6 +262,8 @@ def inregistrare(request):
         form = UserCreationForm(request.POST)
 
         if form.is_valid():
+            print("FORMULAR VALID:", form.is_valid())
+            print("ERORI FORMULAR:", form.errors)
             try:
                 with transaction.atomic():
                     user = form.save()
@@ -308,4 +315,184 @@ def despre_noi(request):
     return render(
         request,
         "supermarket_online/despre_noi.html"
+    )
+
+
+
+@login_required
+def finalizare_comanda(request):
+    client = get_object_or_404(Clienti, user=request.user)
+
+    cos = request.session.get('cos', {})
+
+    if not cos:
+        messages.warning(request, 'Coșul este gol!')
+        return redirect('vizualizare_cos')
+
+    if request.method == 'POST':
+        form = FinalizareComandaForm(request.POST)
+
+        if form.is_valid():
+            try:
+                with transaction.atomic():
+                    # Verificam si blocam produsele pentru actualizarea stocului
+                    articole_cos = []
+
+                    for id_produs, cantitate in cos.items():
+                        try:
+                            produs_id = int(id_produs)
+                            cantitate = int(cantitate)
+                        except (TypeError, ValueError):
+                            messages.error(request, 'Coșul conține date invalide.')
+                            return redirect('vizualizare_cos')
+
+                        if cantitate < 1 or cantitate > 99:
+                            messages.error(request, 'Cantitate invalidă.')
+                            return redirect('vizualizare_cos')
+
+                        articole_cos.append((produs_id, cantitate))
+
+                    produse = Produse.objects.select_for_update().filter(
+                        pk__in=[item[0] for item in articole_cos]
+                    )
+
+                    produse_dict = {
+                        produs.pk: produs for produs in produse
+                    }
+
+                    total = Decimal('0.00')
+                    detalii_comanda = []
+
+                    # Verificam produsele, stocul si preturile
+                    for produs_id, cantitate in articole_cos:
+                        produs = produse_dict.get(produs_id)
+
+                        if produs is None:
+                            raise ValueError(
+                                'Un produs din coș nu mai este disponibil.'
+                            )
+
+                        if produs.stoc < cantitate:
+                            raise ValueError(
+                                f'Stoc insuficient pentru {produs.denumire}. '
+                                f'Disponibil: {produs.stoc}.'
+                            )
+
+                        detalii_pret = obtine_detalii_pret(produs_id)
+                        pret = detalii_pret['pret_final']
+
+                        if pret is None:
+                            raise ValueError(
+                                f'Produsul {produs.denumire} nu are un preț disponibil.'
+                            )
+
+                        pret = Decimal(str(pret))
+                        subtotal = pret * cantitate
+                        total += subtotal
+
+                        detalii_comanda.append({
+                            'produs': produs,
+                            'cantitate': cantitate,
+                            'pret': pret,
+                        })
+
+                    # Salvam datele de livrare ale clientului
+                    client.telefon = form.cleaned_data['telefon']
+                    client.adresa = form.cleaned_data['adresa']
+                    client.save(update_fields=['telefon', 'adresa'])
+
+                    # Cream comanda
+                    print("TOTAL COMANDA:", total)
+                    print("PRODUSE COMANDA:", detalii_comanda)
+                    comanda = Comenzi.objects.create(
+                        id_client=client,
+                        data_comanda=timezone.now(),
+                        total=total
+                    )
+
+                    # Salvam produsele si actualizam stocul
+                    for articol in detalii_comanda:
+                        produs = articol['produs']
+                        cantitate = articol['cantitate']
+
+                        ProduseComenzi.objects.create(
+                            id_comanda=comanda,
+                            id_produs=produs,
+                            cantitate=cantitate,
+                            pret_unitar=articol['pret']
+                        )
+
+                        produs.stoc -= cantitate
+                        produs.save(update_fields=['stoc'])
+
+                    # Inregistram plata la livrare
+                    Plati.objects.create(
+                        id_comanda=comanda,
+                        metoda='Numerar la livrare',
+                        suma=total,
+                        data_plata=None
+                    )
+
+                # Golim cosul numai dupa salvarea cu succes
+                request.session['cos'] = {}
+                request.session.modified = True
+
+                messages.success(
+                    request,
+                    f'Comanda #{comanda.id_comanda} a fost plasată cu succes! '
+                    f'Total: {total:.2f} lei.'
+                )
+
+                return redirect(
+                    'confirmare_comanda',
+                    id_comanda=comanda.id_comanda
+                )
+
+            except Exception as e:
+                print("EROARE LA FINALIZAREA COMENZII:", repr(e))
+                messages.error(request, f"Eroare la plasarea comenzii: {e}")
+                return redirect('vizualizare_cos')
+
+    else:
+        form = FinalizareComandaForm(initial={
+            'telefon': client.telefon or '',
+            'adresa': client.adresa or '',
+        })
+
+    return render(
+        request,
+        'supermarket_online/finalizare_comanda.html',
+        {
+            'form': form,
+            'client': client,
+        }
+    )
+
+
+@login_required
+def confirmare_comanda(request, id_comanda):
+    client = get_object_or_404(Clienti, user=request.user)
+
+    comanda = get_object_or_404(
+        Comenzi,
+        id_comanda=id_comanda,
+        id_client=client
+    )
+
+    articole = ProduseComenzi.objects.filter(
+        id_comanda=comanda
+    ).select_related('id_produs')
+
+    plata = Plati.objects.filter(
+        id_comanda=comanda
+    ).first()
+
+    return render(
+        request,
+        'supermarket_online/confirmare_comanda.html',
+        {
+            'comanda': comanda,
+            'articole': articole,
+            'plata': plata,
+        }
     )
