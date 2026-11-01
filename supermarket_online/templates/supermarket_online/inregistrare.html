@@ -1,38 +1,52 @@
-
 {% load static %}
 <!DOCTYPE html>
 <html lang="ro">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Înregistrare - FreshMarket</title>
     <link rel="stylesheet" href="{% static 'supermarket_online/css/inregistrare.css' %}">
 </head>
+
 <body>
 
-<header class="site-header">
-    <h1>FreshMarket</h1>
-    <a href="{% url 'lista_produse' %}">Înapoi la magazin</a>
-</header>
+    <header class="site-header">
+        <h1>FreshMarket</h1>
+        <a href="{% url 'lista_produse' %}">Înapoi la magazin</a>
+    </header>
 
-<main class="auth-container">
-    <h2>Creare cont</h2>
-    <p>Înregistrează-te pentru a beneficia de serviciile FreshMarket.</p>
+    <main class="auth-container">
+        <h2>Creare cont</h2>
+        <p>Înregistrează-te pentru a beneficia de serviciile FreshMarket.</p>
 
-    <form method="post">
-        {% csrf_token %}
+        <form method="post">
+            {% csrf_token %}
 
-        {{ form.as_p }}
+            {% if form.errors %}
+            <div class="error-message">
+                {{ form.errors }}
+            </div>
+            {% endif %}
 
-        <button type="submit">Creează cont</button>
-    </form>
+            {% if messages %}
+            {% for message in messages %}
+            <div class="success-message">
+                {{ message }}
+            </div>
+            {% endfor %}
+            {% endif %}
 
-    <p>Ai deja un cont?
-        <a href="{% url 'login' %}">Autentifică-te</a>
-    </p>
-</main>
+            {{ form.as_p }}
+
+            <button type="submit">Creează cont</button>
+        </form>
+
+        <p>Ai deja un cont?
+            <a href="{% url 'login' %}">Autentifică-te</a>
+        </p>
+    </main>
 
 </body>
-</html>
-```
 
+</html>

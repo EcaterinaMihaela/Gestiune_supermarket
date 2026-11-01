@@ -12,6 +12,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserChangeForm, PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
 from .forms import EditareContForm
+from django.db import transaction
+from supermarket_online.models import Clienti
 
 from .models import Produse, ProduseFurnizori, ProdusePromotii
 
@@ -251,7 +253,7 @@ def elimina_din_cos(request, produs_id):
 
 
 def inregistrare(request):
-    if request.method == "POST":
+    if request.method == 'POST':
         form = UserCreationForm(request.POST)
 
         if form.is_valid():
@@ -259,22 +261,29 @@ def inregistrare(request):
                 with transaction.atomic():
                     user = form.save()
 
-                login(request, user)
-                messages.success(request, "Contul a fost creat cu succes!")
-                return redirect("lista_produse")
+                    Clienti.objects.create(
+                        nume=user.username,
+                        user=user
+                    )
 
-            except IntegrityError:
-                form.add_error(
-                    "username",
-                    "Acest nume de utilizator este deja folosit."
+                login(request, user)
+                messages.success(
+                    request,
+                    'Contul a fost creat cu succes!'
                 )
+                return redirect('lista_produse')
+
+            except IntegrityError as e:
+                print("EROARE LA CREAREA CONTULUI:", repr(e))
+                messages.error(request, f"Eroare baza de date: {e}")
+
     else:
         form = UserCreationForm()
 
     return render(
         request,
-        "supermarket_online/inregistrare.html",
-        {"form": form}
+        'supermarket_online/inregistrare.html',
+        {'form': form}
     )
 
 @login_required
