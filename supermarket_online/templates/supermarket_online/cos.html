@@ -62,9 +62,29 @@
                         </p>
 
                         {% if articol.pret != None %}
+
+                        {% if articol.are_promotie %}
+                        <p class="cart-old-price">
+                            Preț inițial:
+                            <del>{{ articol.pret_initial|floatformat:2 }} lei</del>
+                        </p>
+
+                        <p class="cart-discount">
+                            Reducere: -{{ articol.procent_reducere|floatformat:0 }}%
+                        </p>
+                        {% endif %}
+
                         <p class="cart-unit-price">
                             {{ articol.pret|floatformat:2 }} lei / bucată
                         </p>
+
+                        {% if articol.furnizor %}
+                        <p class="cart-supplier">
+                            <strong>Furnizor:</strong>
+                            {{ articol.furnizor.nume }}
+                        </p>
+                        {% endif %}
+
                         {% else %}
                         <p class="cart-no-price">
                             Preț indisponibil
@@ -72,18 +92,32 @@
                         {% endif %}
 
                         <div class="cart-item-bottom">
-                            <form method="post" action="{% url 'actualizare_cos' articol.produs.pk %}"
-                                class="cart-quantity-form">
-                                {% csrf_token %}
-                                <label for="cantitate-{{ articol.produs.pk }}">Cantitate</label>
-                                <input id="cantitate-{{ articol.produs.pk }}" type="number" name="cantitate" min="0"
-                                    max="99" value="{{ articol.cantitate }}" required>
-                                <button type="submit" class="cart-button">
-                                    Actualizează
-                                </button>
-                            </form>
+                            <form method="post"
+      action="{% url 'actualizare_cos' articol.produs.pk articol.id_furnizor %}"
+      class="cart-quantity-form">
 
-                            <form method="post" action="{% url 'elimina_din_cos' articol.produs.pk %}">
+    {% csrf_token %}
+
+    <label for="cantitate-{{ articol.produs.pk }}-{{ articol.id_furnizor }}">
+        Cantitate
+    </label>
+
+    <input
+        id="cantitate-{{ articol.produs.pk }}-{{ articol.id_furnizor }}"
+        type="number"
+        name="cantitate"
+        min="0"
+        max="99"
+        value="{{ articol.cantitate }}"
+        required
+    >
+
+    <button type="submit" class="cart-button">
+        Actualizează
+    </button>
+</form>
+
+                            <form method="post" action="{% url 'elimina_din_cos' articol.produs.pk articol.id_furnizor %}">
                                 {% csrf_token %}
                                 <button type="submit" class="remove-button">
                                     ♡ Elimină

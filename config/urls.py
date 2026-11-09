@@ -11,22 +11,30 @@ urlpatterns = [
 
     path('produse/', views.lista_produse, name='lista_produse'),
 
+    path(
+    'produs/<int:produs_id>/',
+    views.detalii_produs,
+    name='detalii_produs'
+ ),
     path('cos/', views.vizualizare_cos, name='vizualizare_cos'),
     path(
         'cos/adauga/<int:produs_id>/',
         views.adauga_in_cos,
         name='adauga_in_cos'
     ),
+    
     path(
-        'cos/actualizeaza/<int:produs_id>/',
+        'cos/actualizeaza/<int:produs_id>/<int:furnizor_id>/',
         views.actualizare_cos,
         name='actualizare_cos'
     ),
+
     path(
-        'cos/elimina/<int:produs_id>/',
+        'cos/elimina/<int:produs_id>/<int:furnizor_id>/',
         views.elimina_din_cos,
         name='elimina_din_cos'
     ),
+
     path(
     "inregistrare/",
     views.inregistrare,
@@ -56,6 +64,9 @@ urlpatterns = [
     views.confirmare_comanda,
     name='confirmare_comanda'
     ),
+    
+    path('produs/<int:produs_id>/', views.detalii_produs, name='detalii_produs'),
+
 ]
 
 if settings.DEBUG:

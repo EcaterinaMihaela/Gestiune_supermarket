@@ -105,6 +105,7 @@
 
         <!-- CATALOG -->
         <section class="catalog" id="catalog">
+
             <div class="section-title">
                 <p class="hero-label">Catalog FreshMarket</p>
                 <h2>Descoperă produsele noastre</h2>
@@ -116,34 +117,41 @@
                 <input type="search" id="searchInput" placeholder="🔍 Denumire sau categorie..." autocomplete="off">
             </div>
 
-            <p class="product-count" id="productCount" aria-live="polite">
+            <p class="product-count" id="productCount">
                 Produse disponibile în catalog
             </p>
 
             <div class="products" id="productList">
+
                 {% for produs in produse %}
+
                 <article class="product-card"
                     data-product-category="{{ produs.id_categorie.denumire|default:'Produs alimentar'|escape }}">
-                    <div class="product-image-container">
-                        {% if produs.imagine_produs and produs.imagine_produs.imagine %}
-                        <img class="product-image" src="{{ produs.imagine_produs.imagine.url }}"
-                            alt="{{ produs.denumire }}" loading="lazy">
-                        {% else %}
-                        <div class="product-icon" aria-label="Imagine indisponibilă">
-                            🛒
+
+                    <a href="{% url 'detalii_produs' produs.pk %}" class="product-image-link">
+
+                        <div class="product-image-container">
+                            {% if produs.imagine_produs and produs.imagine_produs.imagine %}
+                            <img class="product-image" src="{{ produs.imagine_produs.imagine.url }}"
+                                alt="{{ produs.denumire }}" loading="lazy">
+                            {% else %}
+                            <div class="product-icon">🛒</div>
+                            {% endif %}
                         </div>
-                        {% endif %}
-                    </div>
+                    </a>
 
                     <span class="tag">
                         {{ produs.id_categorie.denumire|default:"Produs alimentar" }}
                     </span>
 
-                    <h3 class="product-name">{{ produs.denumire }}</h3>
+                    <h3 class="product-name">
+                        <a href="{% url 'detalii_produs' produs.pk %}">
+                            {{ produs.denumire }}
+                        </a>
+                    </h3>
 
                     <p class="description">
-                        {{ produs.descriere|default:"Mai multe detalii despre acest produs vor fi disponibile în
-                        curând." }}
+                        {{ produs.descriere|default:"Descoperă mai multe detalii despre acest produs." }}
                     </p>
 
                     <div class="product-details">
@@ -151,55 +159,73 @@
                         {{ produs.id_raion.nume_raion|default:"Nespecificat" }}
                     </div>
 
-                    <form method="post" action="{% url 'adauga_in_cos' produs.pk %}" class="add-to-cart-form">
-                        {% csrf_token %}
-                        <input type="hidden" name="cantitate" value="1">
+                    {% if produs.stoc|default:0 > 0 %}
+                    <p class="stock-status in-stock">✓ În stoc</p>
+                    {% else %}
+                    <p class="stock-status out-of-stock">Indisponibil momentan</p>
+                    {% endif %}
 
-                        <div class="product-price">
-                            {% if produs.pret_final != None %}
+                    <div class="product-price">
+                        {% if produs.pret_final != None %}
 
-                            {% if produs.are_promotie %}
+                        {% if produs.are_promotie %}
+                        <div class="price-old-container">
                             <span class="old-price">
                                 {{ produs.pret_initial|floatformat:2 }} lei
                             </span>
-
                             <span class="discount-badge">
                                 -{{ produs.procent_reducere|floatformat:0 }}%
                             </span>
+                        </div>
+                        {% endif %}
 
-                            <div class="current-price">
-                                {{ produs.pret_final|floatformat:2 }} lei
-                            </div>
-                            {% else %}
-                            <div class="current-price">
-                                {{ produs.pret_final|floatformat:2 }} lei
-                            </div>
-                            {% endif %}
-
-                            {% else %}
-                            <div class="price-unavailable">
-                                Preț indisponibil
-                            </div>
-                            {% endif %}
+                        <div class="current-price">
+                            {{ produs.pret_final|floatformat:2 }} lei
                         </div>
 
-                        <button type="submit" class="cart-button">
-                            + Adaugă în coș
+                        {% else %}
+                        <div class="price-unavailable">Preț indisponibil</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="product-actions">
+
+                        <a href="{% url 'detalii_produs' produs.pk %}" class="details-button">
+                            Vezi detalii
+                        </a>
+
+                        {% if produs.stoc > 0 and produs.pret_final != None %}
+                        <form method="post" action="{% url 'adauga_in_cos' produs.pk %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="cantitate" value="1">
+                            <button type="submit" class="cart-button">
+                                🛒 Adaugă în coș
+                            </button>
+                        </form>
+                        {% else %}
+                        <button type="button" class="cart-button disabled-button" disabled>
+                            Indisponibil
                         </button>
-                    </form>
+                        {% endif %}
+
+                    </div>
+
                 </article>
+
                 {% empty %}
                 <div class="empty empty-catalog">
                     <h3>Momentan nu există produse.</h3>
                     <p>Adaugă produse din panoul de administrare.</p>
                 </div>
                 {% endfor %}
+
             </div>
 
             <div class="empty" id="noResults" hidden>
                 <h3>Nu am găsit produse.</h3>
                 <p>Încearcă altă categorie sau alt termen de căutare.</p>
             </div>
+
         </section>
 
         <!-- AVANTAJE -->

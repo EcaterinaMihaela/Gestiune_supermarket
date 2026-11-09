@@ -221,7 +221,7 @@ class Plati(models.Model):
 
 
 class Produse(models.Model):
-    id_produs = models.IntegerField(primary_key=True)
+    id_produs = models.AutoField(primary_key=True)
 
     denumire = models.CharField(max_length=150)
 
@@ -269,27 +269,40 @@ class Produse(models.Model):
 
 
 class ProduseComenzi(models.Model):
+    id_pozitie = models.AutoField(primary_key=True)
 
-    pk = models.CompositePrimaryKey('id_comanda', 'id_produs')
+    id_comanda = models.ForeignKey(
+        Comenzi,
+        models.DO_NOTHING,
+        db_column='id_comanda'
+    )
 
-    id_comanda = models.ForeignKey(Comenzi, models.DO_NOTHING, db_column='id_comanda')
+    id_produs = models.ForeignKey(
+        Produse,
+        models.DO_NOTHING,
+        db_column='id_produs'
+    )
 
-    id_produs = models.ForeignKey(Produse, models.DO_NOTHING, db_column='id_produs')
+    id_furnizor = models.ForeignKey(
+        Furnizori,
+        models.DO_NOTHING,
+        db_column='id_furnizor',
+        blank=True,
+        null=True
+    )
 
     cantitate = models.IntegerField(blank=True, null=True)
 
-    pret_unitar = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
-
-
+    pret_unitar = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        blank=True,
+        null=True
+    )
 
     class Meta:
-
         managed = False
-
         db_table = 'produse_comenzi'
-
-
-
 
 
 
