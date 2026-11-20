@@ -1,0 +1,48 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ro">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+        {% block title %}FreshMarket - Supermarket online{% endblock %}
+    </title>
+
+    <meta name="description"
+        content="{% block meta_description %}FreshMarket - Descoperă produse alimentare și articole pentru cumpărăturile tale.{% endblock %}">
+
+    {% block canonical %}{% endblock %}
+
+    <meta name="robots" content="{% block meta_robots %}index, follow{% endblock %}">
+
+    <meta name="author" content="FreshMarket">
+
+    {% block extra_head %}{% endblock %}
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "OnlineStore",
+        "name": "FreshMarket",
+        "description": "FreshMarket - supermarket online cu produse alimentare și articole pentru cumpărăturile zilnice.",
+        "url": "{{ request.scheme }}://{{ request.get_host }}/",
+        "currenciesAccepted": "RON",
+        "priceRange": "$$"
+    }
+</script>
+</head>
+
+<body>
+
+    {% block content %}
+    {% endblock %}
+
+    {% block extra_scripts %}
+    {% endblock %}
+
+</body>
+
+</html>

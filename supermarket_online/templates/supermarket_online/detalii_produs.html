@@ -1,257 +1,326 @@
+{% extends "base.html" %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="ro">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="{{ produs.descriere|default:produs.denumire|truncatechars:155 }}">
-    <title>{{ produs.denumire }} | FreshMarket</title>
+{% block title %}
+{{ produs.denumire }} - Preț și detalii | FreshMarket
+{% endblock %}
 
-    <link rel="stylesheet" href="{% static 'supermarket_online/css/detalii_produs.css' %}">
-</head>
+{% block meta_description %}
+{{ produs.descriere|default:produs.denumire|striptags|truncatechars:155 }}
+{% endblock %}
 
-<body>
 
-    <!-- HEADER -->
-    <header class="site-header">
-        <a href="{% url 'lista_produse' %}" class="logo">🥬 FreshMarket</a>
+{% block canonical %}
+<link rel="canonical" href="{{ request.scheme }}://{{ request.get_host }}{{ request.path }}">
+{% endblock %}
 
-        <nav class="main-nav">
-            <a href="{% url 'lista_produse' %}">Magazin</a>
-            <a href="{% url 'despre_noi' %}">Despre noi</a>
 
-            {% if user.is_authenticated %}
-            <span class="welcome-message">
-                Bun venit, {{ user.first_name|default:user.username }}!
-            </span>
 
-            {% if user.is_staff %}
-            <span class="user-role admin-role">Role: Administrator</span>
-            <a href="/admin/">Administrare</a>
-            {% else %}
-            <span class="user-role client-role">Role: Client</span>
-            {% endif %}
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'supermarket_online/css/detalii_produs.css' %}">
 
-            <a href="{% url 'contul_meu' %}">Contul meu</a>
-            <a href="{% url 'vizualizare_cos' %}" class="nav-link">
-                🛒 Coșul meu
-            </a>
 
-            <form method="post" action="{% url 'logout' %}">
-                {% csrf_token %}
-                <button type="submit" class="logout-btn">Deconectare</button>
-            </form>
+{% with nume=produs.denumire descriere=produs.descriere|default:produs.denumire %}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": "{{ nume|escapejs }}",
+    "description": "{{ descriere|striptags|escapejs }}",
+    "url": "{{ request.scheme }}://{{ request.get_host }}{{ request.path }}"{% if produs.imagine_url %},
+    "image": "{{ request.scheme }}://{{ request.get_host }}{{ produs.imagine_url }}"{% endif %}{% if produs.pret_final is not None %},
+    "offers": {
+        "@type": "Offer",
+        "priceCurrency": "RON",
+        "price": "{{ produs.pret_final|stringformat:'f' }}",
+        "availability": "{% if produs.stoc|default:0 > 0 %}https://schema.org/InStock{% else %}https://schema.org/OutOfStock{% endif %}",
+        "url": "{{ request.scheme }}://{{ request.get_host }}{{ request.path }}"
+    }{% endif %}
+}
+</script>
+{% endwith %}
 
-            {% else %}
-            <a href="{% url 'login' %}">Autentificare</a>
-            <a href="{% url 'inregistrare' %}">Înregistrare</a>
-            {% endif %}
-        </nav>
-    </header>
 
-    <!-- CONȚINUT PRINCIPAL -->
-    <main>
 
-        <div class="container produs-detalii">
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+        {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Acasă",
+            "item": "{{ request.scheme }}://{{ request.get_host }}/"
+        },
+        {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Produse",
+            "item": "{{ request.scheme }}://{{ request.get_host }}{% url 'lista_produse' %}"
+        }
+        {% if produs.id_categorie %}
+        ,{
+            "@type": "ListItem",
+            "position": 3,
+            "name": "{{ produs.id_categorie.denumire|escapejs }}",
+            "item": "{{ request.scheme }}://{{ request.get_host }}{% url 'lista_produse' %}"
+        }
+        {% endif %},
+        {
+            "@type": "ListItem",
+            "position": {% if produs.id_categorie %}4{% else %}3{% endif %},
+            "name": "{{ produs.denumire|escapejs }}",
+            "item": "{{ request.scheme }}://{{ request.get_host }}{{ request.path }}"
+        }
+    ]
+}
+</script>
 
-            <a href="{% url 'lista_produse' %}" class="inapoi">
-                ← Înapoi la produse
-            </a>
+{% endblock %}
 
-            <div class="detalii-card">
 
-                <!-- IMAGINE PRODUS -->
-                <div class="detalii-imagine">
-                    {% if produs.imagine_url %}
-                    <img src="{{ produs.imagine_url }}" alt="{{ produs.denumire }}">
+
+{% block content %}
+
+<!-- HEADER -->
+<header class="site-header">
+    <a href="{% url 'lista_produse' %}" class="logo">🥬 FreshMarket</a>
+
+    <nav class="main-nav">
+        <a href="{% url 'lista_produse' %}">Magazin</a>
+        <a href="{% url 'despre_noi' %}">Despre noi</a>
+
+        {% if user.is_authenticated %}
+        <span class="welcome-message">
+            Bun venit, {{ user.first_name|default:user.username }}!
+        </span>
+
+        {% if user.is_staff %}
+        <span class="user-role admin-role">Role: Administrator</span>
+        <a href="/admin/">Administrare</a>
+        {% else %}
+        <span class="user-role client-role">Role: Client</span>
+        {% endif %}
+
+        <a href="{% url 'contul_meu' %}">Contul meu</a>
+        <a href="{% url 'vizualizare_cos' %}" class="nav-link">
+            🛒 Coșul meu
+        </a>
+
+        <form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button type="submit" class="logout-btn">Deconectare</button>
+        </form>
+
+        {% else %}
+        <a href="{% url 'login' %}">Autentificare</a>
+        <a href="{% url 'inregistrare' %}">Înregistrare</a>
+        {% endif %}
+    </nav>
+</header>
+
+<!-- CONȚINUT PRINCIPAL -->
+<main>
+
+    <div class="container produs-detalii">
+
+        <a href="{% url 'lista_produse' %}" class="inapoi">
+            ← Înapoi la produse
+        </a>
+
+        <div class="detalii-card">
+
+
+            <!-- IMAGINE PRODUS -->
+            <div class="detalii-imagine">
+                {% if produs.imagine_url %}
+                <img src="{{ produs.imagine_url }}" alt="Imagine produs {{ produs.denumire }}" decoding="async">
+                {% else %}
+                <div class="imagine-lipsa">
+                    Imagine indisponibilă
+                </div>
+                {% endif %}
+            </div>
+
+
+            <!-- INFORMAȚII PRODUS -->
+            <div class="detalii-info">
+
+                {% if produs.id_categorie %}
+                <span class="categorie">
+                    {{ produs.id_categorie.denumire }}
+                </span>
+                {% endif %}
+
+                <h1>{{ produs.denumire }}</h1>
+
+                {% if produs.descriere %}
+                <p class="descriere">
+                    {{ produs.descriere }}
+                </p>
+                {% else %}
+                <p class="descriere">
+                    Nu există momentan o descriere pentru acest produs.
+                </p>
+                {% endif %}
+
+                {% if produs.specificatii %}
+                <h3>Specificații</h3>
+                <p>{{ produs.specificatii|linebreaksbr }}</p>
+                {% endif %}
+
+                {% if produs.id_raion %}
+                <p>
+                    <strong>Raion:</strong>
+                    {{ produs.id_raion.nume_raion }}
+                </p>
+                {% endif %}
+
+                <!-- FURNIZOR ȘI LIVRARE -->
+                {% if produs.furnizor_minim %}
+                <p class="furnizor-info">
+                    <strong>Furnizor:</strong>
+                    {{ produs.furnizor_minim.nume }}
+                </p>
+                {% endif %}
+
+                {% if produs.modalitate_livrare %}
+                <p class="livrare-info">
+                    <strong>Modalitate de livrare:</strong>
+                    {{ produs.modalitate_livrare }}
+                </p>
+                {% endif %}
+
+                <!-- PREȚ -->
+                <div class="preturi">
+
+                    {% if produs.are_promotie %}
+                    <span class="pret-vechi">
+                        {{ produs.pret_initial|floatformat:2 }} lei
+                    </span>
+
+                    <span class="reducere">
+                        -{{ produs.procent_reducere|floatformat:0 }}%
+                    </span>
+
+                    <div class="pret-actual">
+                        {{ produs.pret_final|floatformat:2 }} lei
+                    </div>
+
+                    {% elif produs.pret_final is not None %}
+                    <div class="pret-actual">
+                        {{ produs.pret_final|floatformat:2 }} lei
+                    </div>
+
+                    {% else %}
+                    <div class="pret-indisponibil">
+                        Preț indisponibil
+                    </div>
+                    {% endif %}
+
+                </div>
+
+                <!-- DISPONIBILITATE ȘI COȘ -->
+                {% if produs.stoc|default:0 > 0 and produs.oferte_furnizori %}
+
+                <p class="disponibil">
+                    ✓ În stoc
+                </p>
+
+                <form method="POST" action="{% url 'adauga_in_cos' produs.id_produs %}">
+                    {% csrf_token %}
+                    <div class="supplier-selection">
+                        <label for="id_furnizor">
+                            <strong>Alege furnizorul:</strong>
+                        </label>
+
+                        <select name="id_furnizor" id="id_furnizor" required>
+                            {% for oferta in produs.oferte_furnizori %}
+                            <option value="{{ oferta.furnizor.id_furnizor }}">
+                                {{ oferta.furnizor.nume }} -
+                                {{ oferta.pret_final|floatformat:2 }} lei
+                                {% if oferta.are_promotie %}
+                                ({{ oferta.procent_reducere|floatformat:0 }}% reducere)
+                                {% endif %}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <label for="cantitate">Cantitate:</label>
+
+                    <input type="number" id="cantitate" name="cantitate" value="1" min="1" max="{{ produs.stoc }}"
+                        required>
+
+                    <button type="submit" class="buton-cos">
+                        + Adaugă în coș
+                    </button>
+                </form>
+
+                {% elif produs.stoc|default:0 <= 0 %} Produs momentan indisponibil </p>
+
+                    {% else %}
+
+                    <p class="indisponibil">
+                        Produsul nu poate fi comandat momentan.
+                    </p>
+
+                    {% endif %}
+
+            </div>
+        </div>
+
+        <!-- PRODUSE SIMILARE -->
+        {% if produse_similare %}
+        <section class="similare">
+
+            <h2>Produse similare</h2>
+
+            <div class="similare-grid">
+
+                {% for p in produse_similare %}
+                <div class="similar-card">
+
+                    {% if p.imagine_url %}
+                    <img src="{{ p.imagine_url }}" alt="Imagine produs {{ p.denumire }}" loading="lazy"
+                        decoding="async">
                     {% else %}
                     <div class="imagine-lipsa">
                         Imagine indisponibilă
                     </div>
                     {% endif %}
-                </div>
 
-                <!-- INFORMAȚII PRODUS -->
-                <div class="detalii-info">
+                    <h3>{{ p.denumire }}</h3>
 
-                    {% if produs.id_categorie %}
-                    <span class="categorie">
-                        {{ produs.id_categorie.denumire }}
-                    </span>
-                    {% endif %}
-
-                    <h1>{{ produs.denumire }}</h1>
-
-                    {% if produs.descriere %}
-                    <p class="descriere">
-                        {{ produs.descriere }}
+                    {% if p.pret_final is not None %}
+                    <p class="pret-actual">
+                        {{ p.pret_final|floatformat:2 }} lei
                     </p>
                     {% else %}
-                    <p class="descriere">
-                        Nu există momentan o descriere pentru acest produs.
+                    <p class="pret-indisponibil">
+                        Preț indisponibil
                     </p>
                     {% endif %}
 
-                    {% if produs.specificatii %}
-                    <h3>Specificații</h3>
-                    <p>{{ produs.specificatii|linebreaksbr }}</p>
-                    {% endif %}
-
-                    {% if produs.id_raion %}
-                    <p>
-                        <strong>Raion:</strong>
-                        {{ produs.id_raion.nume_raion }}
-                    </p>
-                    {% endif %}
-
-                    <!-- FURNIZOR ȘI LIVRARE -->
-                    {% if produs.furnizor_minim %}
-                    <p class="furnizor-info">
-                        <strong>Furnizor:</strong>
-                        {{ produs.furnizor_minim.nume }}
-                    </p>
-                    {% endif %}
-
-                    {% if produs.modalitate_livrare %}
-                    <p class="livrare-info">
-                        <strong>Modalitate de livrare:</strong>
-                        {{ produs.modalitate_livrare }}
-                    </p>
-                    {% endif %}
-
-                    <!-- PREȚ -->
-                    <div class="preturi">
-
-                        {% if produs.are_promotie %}
-                        <span class="pret-vechi">
-                            {{ produs.pret_initial|floatformat:2 }} lei
-                        </span>
-
-                        <span class="reducere">
-                            -{{ produs.procent_reducere|floatformat:0 }}%
-                        </span>
-
-                        <div class="pret-actual">
-                            {{ produs.pret_final|floatformat:2 }} lei
-                        </div>
-
-                        {% elif produs.pret_final is not None %}
-                        <div class="pret-actual">
-                            {{ produs.pret_final|floatformat:2 }} lei
-                        </div>
-
-                        {% else %}
-                        <div class="pret-indisponibil">
-                            Preț indisponibil
-                        </div>
-                        {% endif %}
-
-                    </div>
-
-                    <!-- DISPONIBILITATE ȘI COȘ -->
-                    {% if produs.stoc|default:0 > 0 and produs.oferte_furnizori %}
-
-                    <p class="disponibil">
-                        ✓ În stoc
-                    </p>
-
-                    <form method="POST" action="{% url 'adauga_in_cos' produs.id_produs %}">
-                        {% csrf_token %}
-                        <div class="supplier-selection">
-                            <label for="id_furnizor">
-                                <strong>Alege furnizorul:</strong>
-                            </label>
-
-                            <select name="id_furnizor" id="id_furnizor" required>
-                                {% for oferta in produs.oferte_furnizori %}
-                                <option value="{{ oferta.furnizor.id_furnizor }}">
-                                    {{ oferta.furnizor.nume }} -
-                                    {{ oferta.pret_final|floatformat:2 }} lei
-                                    {% if oferta.are_promotie %}
-                                    ({{ oferta.procent_reducere|floatformat:0 }}% reducere)
-                                    {% endif %}
-                                </option>
-                                {% endfor %}
-                            </select>
-                        </div>
-
-                        <label for="cantitate">Cantitate:</label>
-
-                        <input type="number" id="cantitate" name="cantitate" value="1" min="1" max="{{ produs.stoc }}"
-                            required>
-
-                        <button type="submit" class="buton-cos">
-                            + Adaugă în coș
-                        </button>
-                    </form>
-
-                    {% elif produs.stoc|default:0 <= 0 %}
-                        Produs momentan indisponibil
-                        </p>
-
-                        {% else %}
-
-                        <p class="indisponibil">
-                            Produsul nu poate fi comandat momentan.
-                        </p>
-
-                        {% endif %}
+                    <a href="{% url 'detalii_produs' p.id_produs %}">
+                        Vezi detalii →
+                    </a>
 
                 </div>
+                {% endfor %}
+
             </div>
+        </section>
+        {% endif %}
 
-            <!-- PRODUSE SIMILARE -->
-            {% if produse_similare %}
-            <section class="similare">
+    </div>
 
-                <h2>Produse similare</h2>
+</main>
 
-                <div class="similare-grid">
+<!-- FOOTER -->
+<footer class="site-footer">
+    © 2026 FreshMarket · Supermarketul tău online
+</footer>
 
-                    {% for p in produse_similare %}
-                    <div class="similar-card">
-
-                        {% if p.imagine_url %}
-                        <img src="{{ p.imagine_url }}" alt="{{ p.denumire }}">
-                        {% else %}
-                        <div class="imagine-lipsa">
-                            Imagine indisponibilă
-                        </div>
-                        {% endif %}
-
-                        <h3>{{ p.denumire }}</h3>
-
-                        {% if p.pret_final is not None %}
-                        <p class="pret-actual">
-                            {{ p.pret_final|floatformat:2 }} lei
-                        </p>
-                        {% else %}
-                        <p class="pret-indisponibil">
-                            Preț indisponibil
-                        </p>
-                        {% endif %}
-
-                        <a href="{% url 'detalii_produs' p.id_produs %}">
-                            Vezi detalii →
-                        </a>
-
-                    </div>
-                    {% endfor %}
-
-                </div>
-            </section>
-            {% endif %}
-
-        </div>
-
-    </main>
-
-    <!-- FOOTER -->
-    <footer class="site-footer">
-        © 2026 FreshMarket · Supermarketul tău online
-    </footer>
-
-</body>
-
-</html>
+{% endblock %}

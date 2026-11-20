@@ -43,7 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (productCount) {
             productCount.textContent =
-                `Produse afișate: ${visibleCount} din ${products.length}`;
+                `Produse afișarte: ${visibleCount} din ${products.length}`;
         }
 
         if (noResults) {
@@ -53,6 +53,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     searchInput.addEventListener("input", filterProducts);
 
+    // Gestionarea selectării unei categorii prin apăsarea butonului
     categoryButtons.forEach((button) => {
         button.addEventListener("click", () => {
             selectedCategory = button.dataset.categoryFilter || "";

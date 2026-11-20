@@ -1,14 +1,22 @@
 
+{% extends "base.html" %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="ro">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Autentificare - FreshMarket</title>
-    <link rel="stylesheet" href="{% static 'supermarket_online/css/login.css' %}">
-</head>
-<body>
+
+{% block title %}
+Autentificare | FreshMarket
+{% endblock %}
+
+{% block meta_description %}
+Autentifică-te în contul tău FreshMarket pentru a-ți gestiona cumpărăturile.
+{% endblock %}
+
+{% block meta_robots %}noindex, nofollow{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'supermarket_online/css/login.css' %}">
+{% endblock %}
+
+{% block content %}
 
 <header class="site-header">
     <h1>FreshMarket</h1>
@@ -38,7 +46,4 @@
     </p>
 </main>
 
-</body>
-</html>
-```
-
+{% endblock %}

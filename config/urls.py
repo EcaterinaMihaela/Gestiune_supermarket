@@ -5,8 +5,23 @@ from supermarket_online import views
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
+from django.contrib.sitemaps.views import sitemap
+from supermarket_online.sitemaps import (
+    PaginiPubliceSitemap,
+    ProduseSitemap,
+)
+sitemaps = {
+    "pagini": PaginiPubliceSitemap,
+    "produse": ProduseSitemap,
+}
 
 urlpatterns = [
+    path(
+        'sitemap.xml',
+        sitemap,
+        {'sitemaps': sitemaps},
+        name='django.contrib.sitemaps.views.sitemap'
+    ),
     path('admin/', admin.site.urls),
 
     path('produse/', views.lista_produse, name='lista_produse'),
@@ -64,9 +79,7 @@ urlpatterns = [
     views.confirmare_comanda,
     name='confirmare_comanda'
     ),
-    
-    path('produs/<int:produs_id>/', views.detalii_produs, name='detalii_produs'),
-
+    path('robots.txt', views.robots_txt, name='robots_txt'),
 ]
 
 if settings.DEBUG:

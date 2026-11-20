@@ -14,6 +14,7 @@ from django.contrib.auth import update_session_auth_hash
 from .forms import EditareContForm
 from django.db import transaction
 from supermarket_online.models import Clienti
+from django.http import HttpResponse
 
 from .models import Produse, ProduseFurnizori, ProdusePromotii
 from .forms import EditareContForm, FinalizareComandaForm
@@ -271,6 +272,7 @@ def detalii_produs(request, produs_id):
             'produse_similare': produse_similare,
         }
     )
+
 
 @require_POST
 def adauga_in_cos(request, produs_id):
@@ -795,3 +797,13 @@ def confirmare_comanda(request, id_comanda):
             'plata': plata,
         }
     )
+
+def robots_txt(request):
+    continut = f"""User-agent: *
+Allow: /
+
+Disallow: /admin/
+
+Sitemap: {request.build_absolute_uri('/sitemap.xml')}
+"""
+    return HttpResponse(continut, content_type="text/plain")

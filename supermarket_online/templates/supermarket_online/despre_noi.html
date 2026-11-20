@@ -1,14 +1,25 @@
 
+{% extends "base.html" %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="ro">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Despre noi - FreshMarket</title>
-    <link rel="stylesheet" href="{% static 'supermarket_online/css/despre_noi.css' %}">
-</head>
-<body>
+
+{% block title %}
+Despre FreshMarket | Supermarket online
+{% endblock %}
+
+{% block meta_description %}
+Află mai multe despre FreshMarket, supermarketul online creat pentru cumpărături simple și accesibile. Descoperă misiunea și serviciile noastre.
+{% endblock %}
+
+{% block canonical %}
+<link rel="canonical" href="{{ request.scheme }}://{{ request.get_host }}{{ request.path }}">
+{% endblock %}
+
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'supermarket_online/css/despre_noi.css' %}">
+{% endblock %}
+
+{% block content %}
 
 <header class="site-header">
     <a href="{% url 'lista_produse' %}" class="logo">FreshMarket</a>
@@ -61,5 +72,4 @@
     <p>&copy; 2026 FreshMarket. Toate drepturile rezervate.</p>
 </footer>
 
-</body>
-</html>
+{% endblock %}

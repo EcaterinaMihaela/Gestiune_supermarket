@@ -1,52 +1,57 @@
+
+{% extends "base.html" %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="ro">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Înregistrare - FreshMarket</title>
-    <link rel="stylesheet" href="{% static 'supermarket_online/css/inregistrare.css' %}">
-</head>
+{% block title %}
+Înregistrare cont | FreshMarket
+{% endblock %}
 
-<body>
+{% block meta_description %}
+Creează un cont FreshMarket pentru a beneficia de o experiență simplă de cumpărături online.
+{% endblock %}
 
-    <header class="site-header">
-        <h1>FreshMarket</h1>
-        <a href="{% url 'lista_produse' %}">Înapoi la magazin</a>
-    </header>
+{% block meta_robots %}noindex, nofollow{% endblock %}
 
-    <main class="auth-container">
-        <h2>Creare cont</h2>
-        <p>Înregistrează-te pentru a beneficia de serviciile FreshMarket.</p>
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'supermarket_online/css/inregistrare.css' %}">
+{% endblock %}
 
-        <form method="post">
-            {% csrf_token %}
+{% block content %}
 
-            {% if form.errors %}
-            <div class="error-message">
-                {{ form.errors }}
-            </div>
-            {% endif %}
+<header class="site-header">
+    <h1>FreshMarket</h1>
+    <a href="{% url 'lista_produse' %}">Înapoi la magazin</a>
+</header>
 
-            {% if messages %}
-            {% for message in messages %}
-            <div class="success-message">
-                {{ message }}
-            </div>
-            {% endfor %}
-            {% endif %}
+<main class="auth-container">
+    <h2>Creare cont</h2>
+    <p>Înregistrează-te pentru a beneficia de serviciile FreshMarket.</p>
 
-            {{ form.as_p }}
+    <form method="post">
+        {% csrf_token %}
 
-            <button type="submit">Creează cont</button>
-        </form>
+        {% if form.errors %}
+        <div class="error-message">
+            {{ form.errors }}
+        </div>
+        {% endif %}
 
-        <p>Ai deja un cont?
-            <a href="{% url 'login' %}">Autentifică-te</a>
-        </p>
-    </main>
+        {% if messages %}
+        {% for message in messages %}
+        <div class="success-message">
+            {{ message }}
+        </div>
+        {% endfor %}
+        {% endif %}
 
-</body>
+        {{ form.as_p }}
 
-</html>
+        <button type="submit">Creează cont</button>
+    </form>
+
+    <p>Ai deja un cont?
+        <a href="{% url 'login' %}">Autentifică-te</a>
+    </p>
+</main>
+
+{% endblock %}
